@@ -16,6 +16,7 @@ println("| 4. Log out                                       ")
 
 println("> '1'                                              ")
 
+// Customer is opened
 println("|" + "-" * 50                                       )
 println("| Please enter the Customer No.                    ")
 
@@ -30,9 +31,3 @@ println("| Tel. No. : +49 7836 2036"                         )
 println("| E-Mail   : johann.carl.friedrich@gauss.de"        )
 println("| Address  : Albanikirchhof 1A, 37073 Göttingen"    )
 
-// val chars = List("/", "-", "\\", "|")
-// (0 to 30).foreach { _ => chars.foreach { cc =>
-//         print(s"\u0008$cc")
-//         Thread.sleep(150)
-//     }
-// }
