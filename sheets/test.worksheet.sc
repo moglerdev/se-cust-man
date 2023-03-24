@@ -5,6 +5,7 @@ println("> Username: 'moglerdev'"                            )
 
 println("> Password: '*********'                            ")
 
+// User is signed in
 println("|" + "-" * 50                                       )
 println("| Hello, Christopher.                              ")
 println("| Choice you next step?                            ")
