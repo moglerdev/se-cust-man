@@ -16,6 +16,7 @@ println("| 4. Log out                                       ")
 
 println("> '1'                                              ")
 
+// Customer is opened
 println("|" + "-" * 50                                       )
 println("| Please enter the Customer No.                    ")
 
