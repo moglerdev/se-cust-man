@@ -1,34 +1,4 @@
-# Se-Cust-Man (CRM Application)
-
-## About It 
-
-This is a CRM (Customer Relationship Management) application developed as a student project for the course Software Engineering. The application is designed to manage and analyze customer interactions and includes features such as customer data management
-
-*TODO: write more*
-
-## Technologies Used
-- Scala
-*TODO: write more*
-
-## Installation
-
-To install and run the CRM application on your local machine, follow these steps:
-
-1. Clone the repository to your local machine
-
-```bash
-git clone https://github.com/moglerdev/se-cust-man.git
-```
-
-*TODO: write more*
-
-## Usage
-
-Once the application is up and running, you can use it to manage and analyze your customer interactions. 
-
-*TODO: write more*
-
-## MIT License
+MIT License
 
 Copyright (c) 2023 Christopher Jaeger and Dennis Schulze
 
