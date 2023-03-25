@@ -4,9 +4,11 @@
 
 This is a CRM (Customer Relationship Management) application developed as a student project for the course Software Engineering. The application is designed to manage and analyze customer interactions and includes features such as customer data management
 
+*TODO: write more*
 
 ## Technologies Used
 - Scala
+*TODO: write more*
 
 ## Installation
 
@@ -22,11 +24,9 @@ git clone https://github.com/moglerdev/se-cust-man.git
 
 ## Usage
 
-Once the application is up and running, you can use it to manage and analyze your customer interactions. Some of the key features include:
+Once the application is up and running, you can use it to manage and analyze your customer interactions. 
 
-- Customer data management: Add, edit, and delete customer information
-- Sales pipeline management: Track leads and sales opportunities
-- Customer service support: Reaspond to customer inquiries and issues
+*TODO: write more*
 
 ## MIT License
 
