@@ -1,7 +1,8 @@
 # Se-Cust-Man (CRM Application)
 
-[![codecov](https://codecov.io/gh/moglerdev/se-cust-man/branch/master/graph/badge.svg?token=EAVYFLUB02)](https://codecov.io/gh/moglerdev/se-cust-man)
-![example branch parameter](https://github.com/moglerdev/se-cust-man/actions/workflows/main.yml/badge.svg) 
+![codecov](https://img.shields.io/codecov/c/github/moglerdev/se-cust-man?style=for-the-badge)
+![ci_cd](https://img.shields.io/github/actions/workflow/status/moglerdev/se-cust-man/main.yml?style=for-the-badge)
+![branch size](https://img.shields.io/github/repo-size/moglerdev/se-cust-man?style=for-the-badge)
 
 ## About It 
 
