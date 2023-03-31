@@ -14,6 +14,7 @@ project/local-plugins.sbt
 .ensime_cache/
 .sbt-scripted/
 local.sbt
+node_modules/
 
 # Bloop
 .bsp

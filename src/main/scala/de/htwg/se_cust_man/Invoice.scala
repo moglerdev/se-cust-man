@@ -15,7 +15,8 @@ case class Invoice(
     items: List[InvoiceItem],
 ) {
     def sum() : Int = {
-        items.map(_.sum).foldLeft(0)(_ + _)
+        val mappedSum = items.map(_.sum)
+        mappedSum.foldLeft(0)(_ + _)
     }
 }
 
@@ -28,6 +29,6 @@ def deleteInvoice(invoice: Invoice, invoices: List[Invoice]) = {
 }
 
 def setInvoice(invoice: Invoice, invoices: List[Invoice]) = {
-    val res = deleteInvoice(invoice, invoices);
-    invoices.appended(invoice);
+    val d = deleteInvoice(invoice, invoices)
+    d.appended(invoice)
 }
