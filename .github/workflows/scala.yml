@@ -1,0 +1,31 @@
+name: Scala CI
+
+on:
+  push:
+    branches:
+        - master
+        - dev
+  pull_request:
+    branches:
+        - master
+        - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run tests
+      run: sbt clean coverage test
+    - name: Coverage Report
+      run: sbt coverageReport
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: true
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - name: Formatting
+  #     run: sbt scalafmtSbtCheck scalafmtCheck test:scalafmtCheck
