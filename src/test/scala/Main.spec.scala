@@ -8,7 +8,4 @@ class MainSpec extends AnyFlatSpec with should.Matchers {
     "main function" should "print" in {
         main(Array()) should be (())
     }
-    "test test" should "fail" in {
-        1 should be (2)
-    }
 }
