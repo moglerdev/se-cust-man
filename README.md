@@ -1,5 +1,8 @@
 # Se-Cust-Man (CRM Application)
 
+[![codecov](https://codecov.io/gh/moglerdev/se-cust-man/branch/master/graph/badge.svg?token=EAVYFLUB02)](https://codecov.io/gh/moglerdev/se-cust-man)
+![example branch parameter](https://github.com/moglerdev/se-cust-man/actions/workflows/scala.yml/badge.svg?branch=dev) 
+
 ## About It 
 
 This is a CRM (Customer Relationship Management) application developed as a student project for the course Software Engineering. The application is designed to manage and analyze customer interactions and includes features such as customer data management
