@@ -1,5 +1,8 @@
 package de.htwg.se_cust_man;
 
-@main def hello: Unit = {
-  println("Hello World");
-}
+
+def main(args: Array[String]): Unit =
+  println("--" * 8 + "Welcome to SE Cust-Man" + "--" * 7)
+  println("| Please enter your Username and Password:")
+  println("> Username: 'moglerdev'")
+  println("> Password: '*********'")

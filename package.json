@@ -1,0 +1,17 @@
+{
+  "name": "se-cust-man",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "sbt clean test",
+    "prepare": "husky install",
+    "coverage": "sbt clean coverage test coverageReport"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "husky": "^8.0.0"
+  }
+}
