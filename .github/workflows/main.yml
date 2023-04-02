@@ -14,8 +14,13 @@ jobs:
   scalatest_sbt:
     runs-on: ubuntu-latest
     steps:
-    - name: Coveralls GitHub Action
-      uses: coverallsapp/github-action@v2.0.0
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: sbt clean coverage test
+      - name: Coverage Report
+        run: sbt coverageReport
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.0.0
   # lint:
   #   runs-on: ubuntu-latest
   #   steps:
