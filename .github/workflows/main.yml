@@ -11,18 +11,16 @@ on:
         - dev
 
 jobs:
-  test:
+  scalatest_sbt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Run tests
-      run: sbt clean coverage test
-    - name: Coverage Report
-      run: sbt coverageReport
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
-      with:
-        fail_ci_if_error: true
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: sbt clean coverage test
+      - name: Coverage Report
+        run: sbt coverageReport
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.0.0
   # lint:
   #   runs-on: ubuntu-latest
   #   steps:
