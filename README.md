@@ -1,6 +1,6 @@
 # Se-Cust-Man (CRM Application)
-[![Coverage Status](https://coveralls.io/repos/github/moglerdev/se-cust-man/badge.svg?branch=dev)](https://coveralls.io/github/moglerdev/se-cust-man?branch=dev)
-![codecov](https://img.shields.io/codecov/c/github/moglerdev/se-cust-man?style=for-the-badge)
+
+![coveralls](https://img.shields.io/coverallsCoverage/github/moglerdev/se-cust-man?style=for-the-badge)
 ![ci_cd](https://img.shields.io/github/actions/workflow/status/moglerdev/se-cust-man/main.yml?style=for-the-badge)
 ![branch size](https://img.shields.io/github/repo-size/moglerdev/se-cust-man?style=for-the-badge)
 
