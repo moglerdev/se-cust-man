@@ -10,4 +10,5 @@ lazy val root = project
 
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.15",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % "test",
-  )
+    libraryDependencies += "com.googlecode.lanterna" % "lanterna" % "3.2.0-alpha1"
+)
