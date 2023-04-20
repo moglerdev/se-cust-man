@@ -6,6 +6,6 @@ import java.util.Date
 
 class MainSpec extends AnyFlatSpec with should.Matchers {
     "main function" should "print" in {
-        main(Array()) should be (())
+        main() should be (())
     }
 }

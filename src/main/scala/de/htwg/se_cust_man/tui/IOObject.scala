@@ -1,6 +1,6 @@
 package de.htwg.se_cust_man.tui
 
-case class Input(cmd: String, args: List[String])
+case class Input(cmd: String, args: Vector[String])
 
 
 enum ExecutedResult {
@@ -29,8 +29,34 @@ trait IOObject {
 object Directory {
   private val SEPARATOR = "/"
 
-  def getRelativeDir(dir: Directory, path: String): Option[Directory] = {
-    dir.findDir(path)
+  /**
+   * change the current Directory (virtual)
+   * @param input Input
+   * @param dir Current Directory
+   * @return Executed with new Directory
+   */
+  def changeDir(input: Input, dir: Directory): Executed = {
+    dir.findDir(input.args(0)) match {
+      case Some(dir) => Executed(input, ExecutedResult.Open, Some(dir))
+      case None => Executed(input, ExecutedResult.Failure, Some(dir), Some("Directory not found"))
+    }
+  }
+
+  /**
+   * list the content of the current Directory
+   * @param input Input
+   * @param dir Current Directory
+   * @return Executed with the content of the Directory
+   */
+  def listDir(input: Input, dir: Directory): Executed = {
+    if (dir.children.nonEmpty) {
+      val sb = new StringBuilder
+      dir.children.foreach(child => sb.append(child.getName).append("\n"))
+      sb.deleteCharAt(sb.length - 1)
+      Executed(input, ExecutedResult.Success, Some(dir), Some(sb.toString))
+    }
+    else
+      Executed(input, ExecutedResult.Success, Some(dir), Some("Directory is empty"))
   }
 }
 
@@ -41,6 +67,20 @@ object Directory {
  * @param children List of Children (Files and Directories)
  */
 class Directory(val name: String, var parent: Option[Directory], var children: List[IOObject]) extends IOObject {
+  children.foreach(_.setParent(Some(this)))
+
+  /**
+   * Constructor for Directory
+   * @param name Name of the Directory
+   * @param parent Parent Directory
+   */
+  def this(name: String, parent: Option[Directory]) = this(name, parent, List())
+
+  /**
+   * Constructor for Directory
+   * @param name Name of the Directory
+   */
+  def this(name: String) = this(name, None, List())
 
   /**
    * get the name of the Directory
@@ -81,7 +121,7 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
           case Some(dir) => dir.parent
           case None => None
       else currentDir match {
-          case Some(dir) => dir.findDir(token)
+          case Some(xx) => xx.getDirs.find(_.getName == token)
           case None => None
         }
     })
@@ -101,24 +141,10 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
    * @param input Input
    * @return Executed
    */
-  def execute(input: Input): Executed = {
-    if (input.cmd == "cd") {
-      val dir = getDirs.find(_.name == input.args.head)
-      if (dir.isDefined)
-        return Executed(input, ExecutedResult.Open, Some(dir.get))
-      else
-        return Executed(input, ExecutedResult.Failure, Some(this), Some("Directory not found"))
-    }
-    else if (input.cmd == "ls") {
-      if (children.nonEmpty) {
-        val sb = new StringBuilder
-        children.foreach(child => sb.append(child.getName).append("\n"))
-        return Executed(input, ExecutedResult.Success, Some(this), Some(sb.toString))
-      }
-      else
-        return Executed(input, ExecutedResult.Success, Some(this), Some("Directory is empty"))
-    }
-    Executed(input, ExecutedResult.Unknown, Some(this))
+  def execute(input: Input): Option[Executed] = {
+    if (input.cmd == "cd") Some(Directory.changeDir(input, this))
+    else if (input.cmd == "ls") Some(Directory.listDir(input, this))
+    else None
   }
 
   /**
@@ -151,21 +177,32 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
 
   /**
     * return Directory with added child
-    * @param file File or Directory to add
+    * @param child File or Directory to add
     * @return of the Directory with added child
     */
-  def addChild(file: IOObject): Directory = {
-    children = file :: children
+  def addChild(child: IOObject): Directory = {
+    child.setParent(Some(this))
+    children = child :: children
+    this
+  }
+
+  /**
+   * set the children of the Directory
+   */
+  def setChildren(children: List[IOObject]): Directory = {
+    this.children = children
+    children.foreach(_.setParent(Some(this)))
     this
   }
 
   /**
     * return Directory with added children
-    * @param files List of Files or Directories to add
+    * @param childs List of Files or Directories to add
     * @return of the Directory with added children
     */
-  def addChildren(files: List[IOObject]): Directory = {
-    children = files ::: children
+  def addChildren(childs: List[IOObject]): Directory = {
+    childs.foreach(_.setParent(Some(this)))
+    children = childs ::: children
     this
   }
 
@@ -220,25 +257,7 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
   override def toString: String = name
 }
 
-class CustomerSubDir(name: String, parent: Option[Directory], children: List[IOObject])
-  extends Directory(name, parent, children) {
 
-}
-
-class InvoiceDir(name: String, parent: Option[Directory], children: List[File])
-  extends CustomerSubDir(name, parent, children) {
-
-}
-
-class ProjectDir(name: String, parent: Option[Directory], children: List[TaskFile])
-  extends CustomerSubDir(name, parent, children) {
-
-}
-
-class CustomerDir(name: String, parent: Option[Directory], children: List[CustomerSubDir])
-  extends Directory(name, parent, children) {
-
-}
 
 /**
  * Class for File
@@ -298,6 +317,11 @@ class File(val name: String, var parent: Option[Directory], var content: () => S
     File(newName, parent, content)
   }
 
+  /**
+   * NOT IMPLEMENTED!
+   * delete the File
+   * @return deleted File
+   */
   override def delete: File = {
     throw new UnsupportedOperationException
   }
@@ -309,8 +333,3 @@ class File(val name: String, var parent: Option[Directory], var content: () => S
   override def toString: String = name
 }
 
-
-class TaskFile(name: String, parent: Option[Directory], content: () => String)
-  extends File(name, parent, content) {
-
-}
