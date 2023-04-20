@@ -1,6 +1,12 @@
 package de.htwg.se_cust_man.tui
 
-class IOTaskFile(name: String, parent: Option[Directory], content: () => String)
+/**
+ * Class for IOTaskFile
+ * @param name Name of the File
+ * @param parent Parent Directory
+ * @param content Function to get the content of the File
+ */
+class IOTaskFile(name: String, parent: Option[IOProjectDir], content: () => String)
   extends File(name, parent, content) {
 
 }

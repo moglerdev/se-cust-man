@@ -58,6 +58,17 @@ object Directory {
     else
       Executed(input, ExecutedResult.Success, Some(dir), Some("Directory is empty"))
   }
+
+  def makeCustomer(input: Input, dir: Directory): Executed = {
+    if (input.args.length > 1) {
+      val name = input.args(1)
+      new IOCustomerDir(name, Some(dir))
+      Executed(input, ExecutedResult.Success, Some(dir), Some("Customer created"))
+    }
+    else
+      Executed(input, ExecutedResult.Failure, Some(dir), Some("Wrong number of arguments"))
+  }
+
 }
 
 /**
@@ -67,7 +78,7 @@ object Directory {
  * @param children List of Children (Files and Directories)
  */
 class Directory(val name: String, var parent: Option[Directory], var children: List[IOObject]) extends IOObject {
-  children.foreach(_.setParent(Some(this)))
+  if(parent.isDefined) parent.get.addChild(this)
 
   /**
    * Constructor for Directory
@@ -144,6 +155,13 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
   def execute(input: Input): Option[Executed] = {
     if (input.cmd == "cd") Some(Directory.changeDir(input, this))
     else if (input.cmd == "ls") Some(Directory.listDir(input, this))
+    else if (input.cmd == "make" ) {
+      if (input.args.length < 1) return Some(Executed(input, ExecutedResult.Failure, Some(this), Some("Wrong number of arguments, use 'make <customer> <name>'")))
+      input.args(0) match {
+        case "customer" => Some(Directory.makeCustomer(input, this))
+        case _ => Some(Executed(input, ExecutedResult.Failure, Some(this), Some("Unknown parameter, use 'customer'")))
+      }
+    }
     else None
   }
 
@@ -181,7 +199,10 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
     * @return of the Directory with added child
     */
   def addChild(child: IOObject): Directory = {
-    child.setParent(Some(this))
+    if (this.children.contains(child)) {
+      println("Child already exists")
+      return this
+    }
     children = child :: children
     this
   }
@@ -267,6 +288,11 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
  */
 class File(val name: String, var parent: Option[Directory], var content: () => String)
   extends IOObject {
+  if(parent.isDefined) parent.get.addChild(this)
+
+  def this(name: String, parent: Option[Directory], content: String) = this(name, parent, () => content)
+
+  def this(name: String, parent: Option[Directory] = None) = this(name, parent, () => "")
 
   /**
    * get the content of the File
