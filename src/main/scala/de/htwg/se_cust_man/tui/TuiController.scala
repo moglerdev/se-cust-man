@@ -3,9 +3,10 @@ package de.htwg.se_cust_man.tui
 import scala.io.StdIn
 import de.htwg.se_cust_man.tui._
 
+import de.htwg.se_cust_man.models.User
 
-object TuiController {
-  val ROOT = Directory("root", None, List(
+class TuiController(user: User) {
+  private val ROOT = Directory(user.username, None, List(
     Directory("home", None, List()),
     Directory("etc", None, List()),
     Directory("bin", None, List()),
@@ -16,7 +17,7 @@ object TuiController {
     ))
   ))
 
-  def promptPrefix(dir: Directory) : String = {
+  private def promptPrefix(dir: Directory) : String = {
     dir.getPath + ">"
   }
 
@@ -32,7 +33,7 @@ object TuiController {
     }
   }
 
-  def readPrompt(dir: Directory): Option[Executed] = {
+  private def readPrompt(dir: Directory): Option[Executed] = {
     val prompt = promptPrefix(dir);
     val input = StdIn.readLine(prompt).split(" ")
 
@@ -45,11 +46,11 @@ object TuiController {
   }
 
   def start(): String = {
-    renderer(TuiController.ROOT)
+    renderer(ROOT)
   }
 
   @scala.annotation.tailrec
-  def renderer(dir: Directory) : String = {
+  private final def renderer(dir: Directory) : String = {
     readPrompt(dir) match {
       case Some(e) =>
         if (e.msg.isDefined) println(e.msg.get)

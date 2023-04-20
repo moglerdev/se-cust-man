@@ -212,7 +212,6 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
    */
   def setChildren(children: List[IOObject]): Directory = {
     this.children = children
-    children.foreach(_.setParent(Some(this)))
     this
   }
 
@@ -222,7 +221,6 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
     * @return of the Directory with added children
     */
   def addChildren(childs: List[IOObject]): Directory = {
-    childs.foreach(_.setParent(Some(this)))
     children = childs ::: children
     this
   }
@@ -258,7 +256,9 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
       case Some(p) => p.removeChild(this).addChild(dir)
       case None => dir
     }
-    children.foreach(x => x.setParent(Some(dir)))
+    children.foreach(x => {
+      if (x.getParent.get == this) x.setParent(Some(dir))
+    })
     dir
   }
 
