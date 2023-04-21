@@ -7,13 +7,13 @@ import de.htwg.se_cust_man.models.User
 
 class TuiController(user: User) {
   private val ROOT = Directory.createDir(Directory(user.username), Vector(
-    Directory.createDir(Directory("admin"), Vector(
-      Directory("users"),
-      Directory("config"),
-      Directory("logs")
-    )),
-    Directory("customers"),
-    Directory("settings"),
+//    Directory.createDir(Directory("admin"), Vector(
+//      Directory("config"),
+//      Directory("logs")
+//  )),
+//  Directory("customers"),
+//  Directory("users"),
+//  Directory("settings"),
   ))
 
   private def promptPrefix(dir: Directory) : String = {
