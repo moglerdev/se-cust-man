@@ -1,8 +1,14 @@
 package de.htwg.se_cust_man.tui
 
+import de.htwg.se_cust_man.models.Customer
 
 class IOInvoiceDir(name: String, parent: Option[Directory], children: List[File])
   extends Directory(name, parent, children) {
+
+
+  override def toString: String = {
+    "(Invoice) " + name + "/"
+  }
 }
 
 
@@ -13,34 +19,33 @@ object IOCustomerDir {
   }
 
   def makeInvoice(input: Input, dir: IOCustomerDir): Executed = {
-    val pd = new IOProjectDir(input.args(1), Some(dir))
-    Executed(input, ExecutedResult.Success, Some(dir), Some("Project created"))
+    Executed(input, ExecutedResult.Success, Some(dir), Some("Invoice created"))
   }
 }
 
 
 /**
  * Class for Customer Dir
- * @param name Name of the Customer
+ * @param customer Customer
  * @param parent Parent Directory
  * @param children List of Children (IOInvoiceDir | IOProjectDir)
  */
-class IOCustomerDir(name: String, parent: Option[Directory], children: List[IOInvoiceDir | IOProjectDir])
-  extends Directory(name, parent, children) {
+class IOCustomerDir(customer: Customer, parent: Option[Directory], children: List[IOInvoiceDir | IOProjectDir])
+  extends Directory(customer.name.trim().replace(" ", "_"), parent, children) {
 
 
   /**
    * Constructor for IOCustomerDir
-   * @param name Name of the Directory
+   * @param customer Customer
    * @param parent Parent Directory
    */
-  def this(name: String, parent: Option[Directory]) = this(name, parent, List())
+  def this(customer: Customer, parent: Option[Directory]) = this(customer, parent, List())
 
   /**
    * Constructor for IOCustomerDir
-   * @param name Name of the Directory
+   * @param name Customer
    */
-  def this(name: String) = this(name, None, List())
+  def this(customer: Customer) = this(customer, None, List())
 
   override def execute(input: Input): Option[Executed] = {
     if (input.cmd == "cd") Some(Directory.changeDir(input, this))
@@ -52,7 +57,22 @@ class IOCustomerDir(name: String, parent: Option[Directory], children: List[IOIn
         case "invoice" => Some(IOCustomerDir.makeInvoice(input, this))
         case _ => Some(Executed(input, ExecutedResult.Failure, Some(this), Some("Unknown argument, expected: make <project | invoice> <name>")))
       }
+    } else if (input.cmd == "print") {
+      // print customer information
+      val sb = new StringBuilder()
+      sb.append("Customer: " + customer.name + "\n")
+      sb.append("Address: " + customer.address + "\n")
+      sb.append("Phone: " + customer.phone + "\n")
+      sb.append("Email: " + customer.email + "\n")
+      //sb.append("Website: " + customer.website + "\n")
+      //sb.append("Notes: " + customer.notes + "\n")
+      sb.deleteCharAt(sb.length - 1)
+      Some(Executed(input, ExecutedResult.Success, Some(this), Some(sb.toString())))
     }
     else None
+  }
+
+  override def toString: String = {
+    "(Customer) " + customer.name + "/"
   }
 }

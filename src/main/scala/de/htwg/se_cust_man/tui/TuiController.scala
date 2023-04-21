@@ -6,15 +6,14 @@ import de.htwg.se_cust_man.tui._
 import de.htwg.se_cust_man.models.User
 
 class TuiController(user: User) {
-  private val ROOT = Directory(user.username, None, List(
-    Directory("home", None, List()),
-    Directory("etc", None, List()),
-    Directory("bin", None, List()),
-    Directory("usr", None, List(
-      Directory("local", None, List()),
-      Directory("share", None, List()),
-      Directory("bin", None, List())
-    ))
+  private val ROOT = Directory.createDir(Directory(user.username), Vector(
+    Directory.createDir(Directory("admin"), Vector(
+      Directory("users"),
+      Directory("config"),
+      Directory("logs")
+    )),
+    Directory("customers"),
+    Directory("settings"),
   ))
 
   private def promptPrefix(dir: Directory) : String = {
@@ -29,6 +28,13 @@ class TuiController(user: User) {
         if (input.args.isEmpty || !input.args(0).trim().startsWith("/")) None
         else Some(Directory.changeDir(input, ROOT))
       }
+      case "rm" =>
+        if (input.args.isEmpty) None
+        else if (input.args(0).trim().startsWith("/")) {
+          val r = Directory.remove(input, ROOT)
+          Some(Executed(r.input, r.result, r.dir, r.msg))
+        }
+        else Some(Directory.remove(input, dir))
       case _ => None
     }
   }

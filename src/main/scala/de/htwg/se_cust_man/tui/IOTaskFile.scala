@@ -9,4 +9,8 @@ package de.htwg.se_cust_man.tui
 class IOTaskFile(name: String, parent: Option[IOProjectDir], content: () => String)
   extends File(name, parent, content) {
 
+
+  override def toString: String = {
+    "(Task) " + name + ".txt"
+  }
 }

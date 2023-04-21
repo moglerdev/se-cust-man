@@ -1,5 +1,7 @@
 package de.htwg.se_cust_man.tui
 
+import de.htwg.se_cust_man.controllers.CustomerController
+
 case class Input(cmd: String, args: Vector[String])
 
 
@@ -51,7 +53,7 @@ object Directory {
   def listDir(input: Input, dir: Directory): Executed = {
     if (dir.children.nonEmpty) {
       val sb = new StringBuilder
-      dir.children.foreach(child => sb.append(child.getName).append("\n"))
+      dir.children.foreach(child => sb.append(child.toString).append("\n"))
       sb.deleteCharAt(sb.length - 1)
       Executed(input, ExecutedResult.Success, Some(dir), Some(sb.toString))
     }
@@ -59,16 +61,46 @@ object Directory {
       Executed(input, ExecutedResult.Success, Some(dir), Some("Directory is empty"))
   }
 
+  def remove(input: Input, dir: Directory): Executed = {
+    dir.findDir(input.args(0)) match {
+      case Some(toRem) => {
+        if(toRem == dir) return Executed(input, ExecutedResult.Failure, Some(dir), Some("Can't remove current directory"))
+        toRem.getParent match {
+          case Some(parent) => {
+            parent.children = parent.children.filterNot(_ == toRem)
+            Executed(input, ExecutedResult.Success, Some(dir), Some("Directory removed"))
+          }
+          case None => Executed(input, ExecutedResult.Failure, Some(dir), Some("Can't remove root directory"))
+        }
+      }
+      case None => Executed(input, ExecutedResult.Failure, Some(dir), Some("Directory not found"))
+    }
+  }
+
+  /**
+   * create a new Customer
+   * @param input Input
+   * @param dir Current Directory
+   * @return Executed with the new Customer
+   */
   def makeCustomer(input: Input, dir: Directory): Executed = {
     if (input.args.length > 1) {
-      val name = input.args(1)
-      new IOCustomerDir(name, Some(dir))
+      val customer = CustomerController.createPrompt(input.args(1))
+      new IOCustomerDir(customer, Some(dir))
       Executed(input, ExecutedResult.Success, Some(dir), Some("Customer created"))
     }
     else
       Executed(input, ExecutedResult.Failure, Some(dir), Some("Wrong number of arguments"))
   }
 
+
+  def createDir(dir: Directory, subdirs: Vector[Directory]): Directory = {
+    subdirs.foreach(subdir => {
+      subdir.setParent(Some(dir))
+      dir.addChild(subdir)
+    })
+    dir
+  }
 }
 
 /**
@@ -263,19 +295,20 @@ class Directory(val name: String, var parent: Option[Directory], var children: L
   }
 
   /**
-   * NOT IMPLEMENTED!
    * delete the Directory and all its children (Files and Directories)
    * @return Directory
    */
   def delete: Directory = {
-    throw new UnsupportedOperationException
+    setParent(None)
+    setChildren(List())
+    this
   }
 
   /**
     * toString = name
     * @return name of the Directory
     */
-  override def toString: String = name
+  override def toString: String = "(DIR) " + name + "/"
 }
 
 
@@ -344,18 +377,18 @@ class File(val name: String, var parent: Option[Directory], var content: () => S
   }
 
   /**
-   * NOT IMPLEMENTED!
    * delete the File
    * @return deleted File
    */
   override def delete: File = {
-    throw new UnsupportedOperationException
+    setParent(None)
+    this
   }
 
   /**
    * toString = name
    * @return name of the File
    */
-  override def toString: String = name
+  override def toString: String = "(File) " + name + ".ext"
 }
 
