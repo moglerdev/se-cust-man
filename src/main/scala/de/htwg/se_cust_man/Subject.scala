@@ -7,5 +7,5 @@ class Subject {
 
     def unsubscribe(subscriber: Observer): Unit = subscribers = subscribers.filter(a => a != subscriber)
 
-    def notifyObservers() : Unit = subscribers.foreach(a => a.update())
+    def notifyObservers() : Unit = subscribers.foreach(a => a.onNotify())
 }

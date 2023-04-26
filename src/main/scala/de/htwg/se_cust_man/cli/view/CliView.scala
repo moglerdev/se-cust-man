@@ -6,8 +6,8 @@ import scala.io.StdIn
 
 abstract class CliView extends Observer{
 
-  def write(msg: String): Unit = println(msg)
-  def prompt(prefix: String): String = {
+  final protected def write(msg: String): Unit = println(msg)
+  final protected def prompt(prefix: String): String = {
     val t = StdIn.readLine(prefix + "> ")
     if (t == null) {
       print("Bye")

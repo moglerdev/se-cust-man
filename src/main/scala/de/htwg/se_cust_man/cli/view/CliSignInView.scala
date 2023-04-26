@@ -5,7 +5,8 @@ import de.htwg.se_cust_man.controllers.UserController
 import de.htwg.se_cust_man.models.User
 
 class CliSignInView(cltr: UserController) extends CliView {
-  override def update(): Unit = {}
+  override def onNotify(): Unit = {
+  }
 
   def requireSignIn(): Boolean = {
     val username = prompt("username")
