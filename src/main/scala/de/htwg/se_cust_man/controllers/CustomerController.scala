@@ -1,15 +1,24 @@
 package de.htwg.se_cust_man.controllers
 
+import de.htwg.se_cust_man.Subject
 import de.htwg.se_cust_man.models.Customer
-import scala.io.StdIn
 
-object CustomerController {
-  def createPrompt(inName: String = ""): Customer = {
+class CustomerController extends Subject {
+  private var customer: Vector[Customer] = Vector.empty
 
-    val name = if(inName == "") StdIn.readLine("Enter customer name: ") else inName
-    val address = StdIn.readLine("Enter customer address: ")
-    val phone = StdIn.readLine("Enter customer phone: ")
-    val email = StdIn.readLine("Enter customer email: ")
-    Customer(name, address, phone, email)
+  def addCustomer(customer: Customer): Unit = {
+    this.customer = this.customer :+ customer
+    this.notifyObservers()
+  }
+
+  def removeCustomer(customer: Customer) : Unit = {
+    this.customer = this.customer.filterNot(_ == customer)
+    this.notifyObservers()
+  }
+
+  def getCustomer: Vector[Customer] = this.customer
+
+  def getCustomerByName(name: String): Option[Customer] = {
+    this.customer.find(_.name == name)
   }
 }

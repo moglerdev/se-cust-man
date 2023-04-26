@@ -3,10 +3,8 @@ package de.htwg.se_cust_man
 import org.scalatest.flatspec.*
 import org.scalatest.matchers.*
 import de.htwg.se_cust_man.*
-import de.htwg.se_cust_man.controllers.DataController
 
 import java.util.Date
-import de.htwg.se_cust_man.models.DataModel
 
 import scala.List
 
