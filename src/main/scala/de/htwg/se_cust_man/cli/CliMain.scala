@@ -1,12 +1,29 @@
 package de.htwg.se_cust_man.cli
 
-import de.htwg.se_cust_man.cli.view.CliMainView
-import de.htwg.se_cust_man.controllers.UserController
+import de.htwg.se_cust_man.controllers.SessionController
 
+import scala.io.StdIn
+
+def signInDialog(sessionController: SessionController) : Boolean = {
+  println("Please enter your username:")
+  val username = StdIn.readLine(">>>")
+  println("Please enter your password:")
+  val password = StdIn.readLine(">>>")
+
+  sessionController.signIn(username, password)
+}
 
 @main
 def runCli(): Unit = {
-  val mainView = new CliMainView
-  mainView.render()
-  mainView.close()
+  val sessionController = new SessionController()
+  val mainWindow = new MainWindow(sessionController)
+  while (mainWindow.getIsRunning) {
+    if (!mainWindow.getIsSignedIn) {
+      if (!signInDialog(sessionController)) {
+        println("Wrong username or password!")
+      }
+    }
+    else mainWindow.update()
+  }
+  println("Bye!")
 }

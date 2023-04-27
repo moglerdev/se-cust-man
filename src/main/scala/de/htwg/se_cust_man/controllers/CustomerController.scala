@@ -6,7 +6,7 @@ import de.htwg.se_cust_man.models.Customer
 class CustomerController extends Subject {
   private var customers: Vector[Customer] = Vector.empty
 
-  def getCustomers() = this.customers
+  def getCustomers(): Vector[Customer] = this.customers
 
   def addCustomer(customer: Customer): Unit = {
     this.customers = this.customers :+ customer
