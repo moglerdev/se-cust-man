@@ -10,11 +10,13 @@ object Customer {
     val email = if (values.length > 4) values(4) else ""
     Customer(id, name, address, phone, email)
   }
+
+  def empty: Customer = Customer(-1, "", "", "", "")
 }
 
 case class Customer(id: Long, name: String, address: String, phone: String, email: String) {
   override def toString: String =
-    s"name: ${name}; address: ${address}; phone: ${phone}; email: ${email}"
+    s"Customer(${id},${name},${address},${phone},${email})"
 
   def toCSV: String =
     s"${id};${name};${address};${phone};${email}"

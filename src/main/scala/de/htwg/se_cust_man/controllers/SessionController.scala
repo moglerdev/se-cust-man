@@ -3,18 +3,15 @@ package de.htwg.se_cust_man.controllers
 import de.htwg.se_cust_man.Subject
 import de.htwg.se_cust_man.models.User
 
-var users = List(
-  User("admin", "admin"),
-  User("mogler", "mein_password"),
-  User("dennis", "sehr sicher"),
-)
-
-
 class SessionController extends Subject {
   private var session: Option[User] = None
 
   def signIn(username: String, password: String): Boolean = {
-    val user = users.find(p => p.username == username && p.password == password)
+    val user = if (username == "admin" && password == "admin") {
+      Some(User("admin", "admin"))
+    } else {
+      None
+    }
     if (user.isEmpty) {
       false
     } else {
@@ -30,10 +27,10 @@ class SessionController extends Subject {
     true
   }
 
-  def getUsername: String = {
+  def getUsername: Option[String] = {
     session match {
-      case Some(user) => user.username
-      case None => ""
+      case Some(user) => Some(user.username)
+      case None => None
     }
   }
 

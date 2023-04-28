@@ -22,7 +22,7 @@ class CustomerView(editor: EditorCustomerController) extends CliView {
     open = editor.isOpen
   }
 
-  private def updateValue(input: Input): Boolean = {
+  def updateValue(input: Input): Boolean = {
     if(input.arguments.length < 2) return false
 
     if (editor.updateValues(input.arguments.head, input.arguments.tail.mkString(" "))) {

@@ -3,9 +3,8 @@ package de.htwg.se_cust_man.controllers
 import de.htwg.se_cust_man.Subject
 import de.htwg.se_cust_man.cli.Cli
 import de.htwg.se_cust_man.models.{Customer, Project}
-import de.htwg.se_cust_man.controllers.DBCustomers
 
-class EditorCustomerController extends Subject{
+class EditorCustomerController(var customers: Vector[Customer]) extends Subject{
   private var openCustomer: Option[Customer] = None
   private var isNew: Boolean = false
 
@@ -18,17 +17,18 @@ class EditorCustomerController extends Subject{
         isNew = false
       }
       objs(1) match
-        case "UPDATE" => DBCustomers.value = DBCustomers.value.map(x => {
+        case "UPDATE" => customers = customers.map(x => {
           if (x.id == r.id) r
           else x
         })
-        case "NEW" => DBCustomers.add(r)
-        case "DELETE" => DBCustomers.value = DBCustomers.value.filter(x => x.id != r.id)
+        case "NEW" => customers = customers :+ r
+        case "DELETE" => customers = customers.filter(x => x.id != r.id)
         case _ => {}
     }
     notifyObservers()
   }
-  Cli.subscribe(this.onMessage)
+  // Auslagerb
+  //Cli.subscribe(this.onMessage)
 
   def getOpenCustomer: Option[Customer] = openCustomer
 
@@ -53,10 +53,10 @@ class EditorCustomerController extends Subject{
     if (openCustomer.isEmpty) return false
     val cust = openCustomer.get
     if (isNew) {
-      DBCustomers.add(cust)
+      customers = customers :+ cust
       Cli.send(s"CUSTOMER::NEW::${cust.toCSV}")
     } else {
-      DBCustomers.value = DBCustomers.value.map(x => {
+      customers = customers.map(x => {
         if (x.id == cust.id) cust
         else x
       })
@@ -68,9 +68,9 @@ class EditorCustomerController extends Subject{
     true
   }
 
-  def createCustomer(): Option[Customer] = {
+  def createCustomer(customer: Option[Customer] = None): Option[Customer] = {
     val res = openCustomer
-    openCustomer = Some(Customer(-1, "", "", "", ""))
+    openCustomer = Some(customer.getOrElse(Customer.empty))
     isNew = true
     notifyObservers()
     res
@@ -78,7 +78,7 @@ class EditorCustomerController extends Subject{
 
   def openCustomer(id: Int): Option[Customer] = {
     isNew = false
-    openCustomer = DBCustomers.value.find(x => x.id == id)
+    openCustomer = customers.find(x => x.id == id)
     notifyObservers()
     openCustomer
   }

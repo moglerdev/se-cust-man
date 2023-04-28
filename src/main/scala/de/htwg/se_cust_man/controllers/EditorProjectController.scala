@@ -4,19 +4,8 @@ import de.htwg.se_cust_man.Subject
 import de.htwg.se_cust_man.cli.Cli
 import de.htwg.se_cust_man.models.Project
 
-object DBProjects {
-  def add(project: Project): Int = {
-    val newId = DBProjects.value.length
-    DBProjects.value = DBProjects.value :+ Project(id = newId, project.title)
-    newId
-  }
 
-  var value : Vector[Project] = Vector(
-    Project(0, "Se Cust Man"),
-    Project(1, "Rechnungen")
-  )
-}
-class EditorProjectController extends Subject{
+class EditorProjectController(var projects: Vector[Project]) extends Subject{
   private var openProject: Option[Project] = None
   private var isNew: Boolean = false
 
@@ -29,17 +18,18 @@ class EditorProjectController extends Subject{
         isNew = false
       }
       objs(1) match
-        case "UPDATE" => DBProjects.value = DBProjects.value.map(x => {
+        case "UPDATE" => projects = projects.map(x => {
           if (x.id == r.id) r
           else x
         })
-        case "NEW" => DBProjects.add(r)
-        case "DELETE" => DBProjects.value = DBProjects.value.filter(x => x.id != r.id)
+        case "NEW" => projects = projects :+ r
+        case "DELETE" => projects = projects.filterNot(x => x.id == r.id)
         case _ => {}
     }
     notifyObservers()
   }
-  Cli.subscribe(this.onMessage)
+  // TODO: Auslagern
+  // Cli.subscribe(this.onMessage)
 
   def getOpenProject: Option[Project] = openProject
 
@@ -61,10 +51,10 @@ class EditorProjectController extends Subject{
     if (openProject.isEmpty) return false
     val cust = openProject.get
     if (isNew) {
-      DBProjects.add(cust)
+      projects = projects :+ cust
       Cli.send(s"PROJECT::NEW::${cust.toCSV}")
     } else {
-      DBProjects.value = DBProjects.value.map(x => {
+      projects = projects.map(x => {
         if (x.id == cust.id) cust
         else x
       })
@@ -76,17 +66,17 @@ class EditorProjectController extends Subject{
     true
   }
 
-  def createProject(): Option[Project] = {
+  def createProject(project: Option[Project] = None): Option[Project] = {
     val res = openProject
-    openProject = Some(Project(-1, ""))
+    openProject = Some(project.getOrElse(Project.empty))
     isNew = true
     notifyObservers()
     res
   }
 
-  def openProject(id: Int): Option[Project] = {
+  def openProject(id: Long): Option[Project] = {
     isNew = false
-    openProject = DBProjects.value.find(x => x.id == id)
+    openProject = projects.find(x => x.id == id)
     notifyObservers()
     openProject
   }

@@ -7,9 +7,11 @@ object Project {
     val values = csvRow.split(";")
     Project(values(0).toLong, values(1))
   }
+
+  def empty: Project = Project(-1, "")
 }
 
 case class Project(id: Long, title: String) {
-  override def toString: String = s"ID:$id: TITLE:$title"
+  override def toString: String = s"Project($id,$title)"
   def toCSV: String = s"$id;$title"
 }
