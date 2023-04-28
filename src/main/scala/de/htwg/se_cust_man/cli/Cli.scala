@@ -2,6 +2,7 @@ package de.htwg.se_cust_man.cli
 
 import de.htwg.se_cust_man.server.ClientHelper
 
+import java.net.SocketException
 import scala.io.StdIn
 
 case class Input(command: String, arguments: Vector[String])
@@ -17,9 +18,18 @@ object Cli {
 
   var client : Option[ClientHelper] = None
 
-  def startSocket(): Unit = {
-    client = Some(new ClientHelper)
-    client.get.startConnection("127.0.0.1", 25565)
+  def startSocket(): Boolean = {
+    try {
+      client = Some(new ClientHelper)
+      client.get.startConnection("127.0.0.1", 25565)
+      return true
+    }
+    catch {
+      case e: SocketException => {}
+      case e: Exception => {println(e.getMessage)}
+    }
+    client = None
+    false
   }
 
   def send(msg: String): Unit = {

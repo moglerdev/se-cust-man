@@ -3,13 +3,12 @@ package de.htwg.se_cust_man.controllers
 import de.htwg.se_cust_man.Subject
 import de.htwg.se_cust_man.models.{Project, Customer}
 
-class ProjectController(customer: Customer) extends Subject {
-  private var projects = Vector[Project]()
+class ProjectController extends Subject {
 
-  def getProjects = projects
+  def getProjects: Vector[Project] = DBProjects.value
 
-  def addProject(project: Project) = {
-    projects = projects :+ project
+  def addProject(project: Project): Unit = {
+    DBProjects.add(project)
     notifyObservers()
   }
 

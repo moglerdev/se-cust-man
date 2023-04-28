@@ -8,7 +8,9 @@ import scala.io.StdIn
 
 @main
 def runCli(): Unit = {
-  Cli.startSocket()
+  if(!Cli.startSocket()) {
+    println("Could not connect to server, please try again later with 'connect'.")
+  }
   val mw: MainWindow = new MainWindow
   mw.loop()
   Cli.stopSocket()

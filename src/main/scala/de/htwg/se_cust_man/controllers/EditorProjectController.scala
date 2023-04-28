@@ -62,13 +62,13 @@ class EditorProjectController extends Subject{
     val cust = openProject.get
     if (isNew) {
       DBProjects.add(cust)
-      Cli.send(s"Project::NEW::${cust.toCSV}")
+      Cli.send(s"PROJECT::NEW::${cust.toCSV}")
     } else {
       DBProjects.value = DBProjects.value.map(x => {
         if (x.id == cust.id) cust
         else x
       })
-      Cli.send(s"Project::UPDATE::${cust.toCSV}")
+      Cli.send(s"PROJECT::UPDATE::${cust.toCSV}")
     }
     if (closeAfter) {
       closeProject()

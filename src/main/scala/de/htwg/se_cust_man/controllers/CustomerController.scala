@@ -19,7 +19,7 @@ object DBCustomers {
 
 class CustomerController extends Subject {
 
-  def getCustomers() : Vector[Customer] = {
+  def getCustomers : Vector[Customer] = {
     DBCustomers.value
   }
 
