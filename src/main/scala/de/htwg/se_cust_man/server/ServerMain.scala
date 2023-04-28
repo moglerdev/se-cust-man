@@ -4,19 +4,24 @@ import java.net.*
 import java.io.*
 import java.util.concurrent.{BlockingQueue, LinkedBlockingQueue}
 
-class ClientConnect(val clientSocket: Socket, val queue: BlockingQueue[String]) extends Thread {
+class ClientConnect(val id: Int, val clientSocket: Socket, val queue: BlockingQueue[String], val onError: (Int, Exception) => Unit) extends Thread {
   val out: PrintWriter = new PrintWriter(clientSocket.getOutputStream, true)
   val in: BufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream))
 
   override def run(): Unit = {
-    while (clientSocket.isConnected) {
-      val line = in.readLine()
-      queue.put(line)
+    try {
+      while (clientSocket.isConnected) {
+        val line = in.readLine()
+        queue.put(id + "__" + line)
+      }
+    } catch {
+      case e: Exception => onError(id, e)
     }
   }
 
   def send(msg: String): Unit = {
     out.println(msg)
+    out.flush()
   }
 
   def close(): Unit = {
@@ -44,17 +49,26 @@ class SmallServer(port: Int) {
   var connections: Vector[ClientConnect] = Vector.empty
 
   def sendAll(msg: String) : Unit = {
-    connections.foreach(x => x.send(msg))
+    val o = msg.split("__")
+    val id = o(0).toInt
+    connections.filter( x => x.id != id).foreach(x => x.send(o(1)))
   }
   val hander = new HandleMessages(queue, sendAll)
 
+  def handleError(id: Int, e: Exception): Unit = {
+    println("Error: " + e.getMessage)
+    connections = connections.filter(x => x.id != id)
+  }
+
   def loop(): Unit = {
     hander.start()
+    var counter = 0;
     while (!serverSocket.isClosed) {
       val client = serverSocket.accept()
-      val t = new ClientConnect(client, queue)
+      val t = new ClientConnect(counter, client, queue, handleError)
       connections = connections :+ t
       t.start()
+      counter+= 1
     }
   }
 

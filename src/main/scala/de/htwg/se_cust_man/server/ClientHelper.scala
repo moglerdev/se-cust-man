@@ -29,7 +29,6 @@ class ClientHelper extends ServerApi {
   private var out: Option[PrintWriter] = None
   private var in: Option[BufferedReader] = None
 
-  private val msgs = new LinkedBlockingQueue[String]
   private var msgListener : Option[MessageListener] = None
 
   def handleMessage(msg: String): Unit = {
@@ -41,6 +40,7 @@ class ClientHelper extends ServerApi {
     out = Some(new PrintWriter(clientSocket.get.getOutputStream, true))
     in = Some(new BufferedReader(new InputStreamReader(clientSocket.get.getInputStream)))
     msgListener = Some(new MessageListener(in.get, handleMessage));
+    msgListener.get.start()
   }
 
   def sendMessage(msg: String): Unit = {

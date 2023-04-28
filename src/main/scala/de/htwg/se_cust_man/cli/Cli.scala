@@ -22,11 +22,11 @@ object Cli {
     client.get.startConnection("127.0.0.1", 25565)
   }
 
-  def send(msg: String) = {
+  def send(msg: String): Unit = {
     client.get.sendMessage(msg)
   }
 
-  def subscribe(onMessage: (String) => Unit) = {
+  def subscribe(onMessage: (String) => Unit): Unit = {
     client.get.subscribe(onMessage)
   }
 }

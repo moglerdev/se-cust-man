@@ -9,6 +9,27 @@ class EditorCustomerController extends Subject{
   private var openCustomer: Option[Customer] = None
   private var isNew: Boolean = false
 
+  def onMessage(msg: String): Unit = {
+    val objs = msg.split("::")
+    if (objs.head.startsWith("CUSTOMER")) {
+      val r = Customer.fromCSV(objs.last)
+      if (openCustomer.isDefined && r.id == openCustomer.get.id) {
+        openCustomer = Some(r)
+        isNew = false
+      }
+      objs(1) match
+        case "UPDATE" => DBCustomers.value = DBCustomers.value.map(x => {
+          if (x.id == r.id) r
+          else x
+        })
+        case "NEW" => DBCustomers.add(r)
+        case "DELETE" => DBCustomers.value = DBCustomers.value.filter(x => x.id != r.id)
+        case _ => {}
+    }
+    notifyObservers()
+  }
+  Cli.subscribe(this.onMessage)
+
   def getOpenCustomer: Option[Customer] = openCustomer
 
   def isOpen: Boolean = openCustomer.isDefined || isNew
@@ -33,13 +54,13 @@ class EditorCustomerController extends Subject{
     val cust = openCustomer.get
     if (isNew) {
       DBCustomers.add(cust)
-      Cli.send(s"NEW:CUSTOMER:${cust.toString}")
+      Cli.send(s"CUSTOMER::NEW::${cust.toCSV}")
     } else {
       DBCustomers.value = DBCustomers.value.map(x => {
         if (x.id == cust.id) cust
         else x
       })
-      Cli.send(s"UPDATE:CUSTOMER:${cust.toString}")
+      Cli.send(s"CUSTOMER::UPDATE::${cust.toCSV}")
     }
     if (closeAfter) {
       closeCustomer()
