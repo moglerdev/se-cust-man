@@ -8,14 +8,23 @@ class ClientConnect(val id: Int, val clientSocket: Socket, val queue: BlockingQu
   val out: PrintWriter = new PrintWriter(clientSocket.getOutputStream, true)
   val in: BufferedReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream))
 
+  var isRunning = false
+
   override def run(): Unit = {
+    isRunning = true
     try {
-      while (clientSocket.isConnected) {
+      while (isRunning) {
         val line = in.readLine()
-        queue.put(id + "__" + line)
+        if (line == null) {
+          isRunning = false
+        } else {
+          queue.put(id + "__" + line)
+        }
       }
     } catch {
       case e: Exception => onError(id, e)
+    } finally {
+      this.close()
     }
   }
 
@@ -32,8 +41,11 @@ class ClientConnect(val id: Int, val clientSocket: Socket, val queue: BlockingQu
 }
 
 class HandleMessages(val queue: BlockingQueue[String], sendAll: (msg: String) => Unit) extends Thread {
+  var isRunning = false
+
   override def run(): Unit = {
-    while (true) {
+    isRunning = true
+    while (isRunning) {
       val str = queue.take()
       println(str)
       sendAll(str)

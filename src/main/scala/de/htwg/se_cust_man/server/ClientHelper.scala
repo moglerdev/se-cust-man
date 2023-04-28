@@ -6,11 +6,22 @@ import java.net.*
 import java.io.*
 import java.util.concurrent.LinkedBlockingQueue
 
-class MessageListener(in: BufferedReader, onMessage: (msg: String) => Unit) extends Thread {
+class MessageListener(in: BufferedReader, onMessage: (String) => Unit) extends Thread {
+  var isRunning = false
   override def run(): Unit = {
-    while (true) {
-      val line = in.readLine()
-      onMessage(line)
+    isRunning = true
+    while (isRunning) {
+      try {
+        val line = in.readLine()
+        onMessage(line)
+      }
+      catch {
+        case e: SocketException => {
+        }
+        case e: Exception => {
+          throw e
+        }
+      }
     }
   }
 }
@@ -48,7 +59,9 @@ class ClientHelper extends ServerApi {
   }
 
   def stopConnection(): Unit = {
-    in.get.close()
+    this.msgListener.get.isRunning = false
+    this.msgListener.get.interrupt()
+    out.get.flush()
     out.get.close()
     clientSocket.get.close()
   }

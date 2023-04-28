@@ -23,10 +23,15 @@ object Cli {
   }
 
   def send(msg: String): Unit = {
-    client.get.sendMessage(msg)
+    if(client.isDefined) client.get.sendMessage(msg)
   }
 
   def subscribe(onMessage: (String) => Unit): Unit = {
-    client.get.subscribe(onMessage)
+    if (client.isDefined) client.get.subscribe(onMessage)
+  }
+
+  def stopSocket(): Unit = {
+    if (client.isDefined)
+      client.get.stopConnection()
   }
 }

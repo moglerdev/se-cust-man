@@ -11,4 +11,5 @@ def runCli(): Unit = {
   Cli.startSocket()
   val mw: MainWindow = new MainWindow
   mw.loop()
+  Cli.stopSocket()
 }
