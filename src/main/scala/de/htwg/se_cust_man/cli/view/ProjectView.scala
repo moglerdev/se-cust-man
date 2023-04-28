@@ -1,15 +1,15 @@
 package de.htwg.se_cust_man.cli.view
 
 import de.htwg.se_cust_man.cli.Input
-import de.htwg.se_cust_man.controllers.EditorCustomerController
+import de.htwg.se_cust_man.controllers.EditorProjectController
 
-class ProjectView(editor: EditorCustomerController) extends CliView {
+class ProjectView(editor: EditorProjectController) extends CliView {
   editor.subscribe(this)
 
   override def promptPrefix: String = {
     val prefix = if (changes) "[!C!]" else ""
-    if(editor.isNewCustomer) prefix + "(NEW CUSTOMER)"
-    else prefix + editor.getOpenCustomer.get.name
+    if(editor.isNewProject) prefix + "(NEW PROJECT) " + editor.getOpenProject.get.title
+    else prefix + editor.getOpenProject.get.title
   }
 
   private var changes = false
@@ -33,14 +33,14 @@ class ProjectView(editor: EditorCustomerController) extends CliView {
   override def eval(input: Input): Option[String] = {
     input.command match
       case "exit" =>
-        editor.closeCustomer()
-        Some("Customer closed with out saves")
+        editor.closeProject()
+        Some("Project closed with out saving")
       case "save" =>
-        editor.saveCustomer(true)
+        editor.saveProject(true)
         changes = false
-        Some("Customer is saved and closed")
+        Some("Project is saved and closed")
       case "print" =>
-        Some(editor.getOpenCustomer.get.toString)
+        Some(editor.getOpenProject.get.toString)
       case "set" =>
         if(updateValue(input))
           changes = true
