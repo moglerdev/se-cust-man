@@ -11,7 +11,7 @@ var users = List(
 
 
 class SessionController extends Subject {
-  var session: Option[User] = None
+  private var session: Option[User] = None
 
   def signIn(username: String, password: String): Boolean = {
     val user = users.find(p => p.username == username && p.password == password)
@@ -26,6 +26,7 @@ class SessionController extends Subject {
 
   def signOut (): Boolean = {
     session = None
+    notifyObservers()
     true
   }
 

@@ -11,5 +11,6 @@ lazy val root = project
     libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.15",
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % "test",
     coverageExcludedPackages := "*Main.scala",
-    libraryDependencies += "org.scalatestplus" %% "mockito-4-6" % "3.2.15.0" % "test"
+    libraryDependencies += "org.scalatestplus" %% "mockito-4-6" % "3.2.15.0" % "test",
+    libraryDependencies += "org.xerial" % "sqlite-jdbc" % "3.40.1.0"
 )
