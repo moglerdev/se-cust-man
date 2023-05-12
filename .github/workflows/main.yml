@@ -27,8 +27,8 @@ jobs:
     env:
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
-      - uses: Ilshidur/action-discord@master
       - name: Send Error To DC
+        uses: Ilshidur/action-discord@master
         if: failure()
         with:
           args: |
@@ -38,6 +38,7 @@ jobs:
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
             
       - name: Send Success to DC with PR
+        uses: Ilshidur/action-discord@master
         if: github.event_name == 'pull_request' && success()
         with:
           args: |
@@ -45,6 +46,7 @@ jobs:
             with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
       - name: Send Success to DC without DC
+        uses: Ilshidur/action-discord@master
         if: github.event_name != 'pull_request' && success()
         with:
           args: |
