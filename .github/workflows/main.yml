@@ -14,6 +14,9 @@ jobs:
   scalatest_sbt:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v1
+      - name: Try to fail
+        run: exit 1
 #      - uses: actions/checkout@v2
 #      - name: Run tests
 #        run: sbt clean coverage test
@@ -27,8 +30,8 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            **SUCCESS:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
-            with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed.
+            **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
+            with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
   failure:
     if: failure()
@@ -41,7 +44,9 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            **FAILED:** **'{{ EVENT_PAYLOAD.pull_request.title }}'** failed.
+            **:sob: FAILED :dizzy_face:** PR with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** that try
+            from branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** failed, 
+            with the following error: **'{{ job.status }}'** :bangbang: 
             Please check the logs and try again.
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
 
