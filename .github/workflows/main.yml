@@ -21,6 +21,24 @@ jobs:
         run: sbt coverageReport
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.0.0
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+  failure:
+    if: failure()
+    needs: scalatest_sbt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has failed.'
+
   # lint:
   #   runs-on: ubuntu-latest
   #   steps:
