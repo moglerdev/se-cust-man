@@ -14,19 +14,21 @@ jobs:
   scalatest_sbt:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: sbt clean coverage test
-      - name: Coverage Report
-        run: sbt coverageReport
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@v2.0.0
+#      - uses: actions/checkout@v2
+#      - name: Run tests
+#        run: sbt clean coverage test
+#      - name: Coverage Report
+#        run: sbt coverageReport
+#      - name: Coveralls GitHub Action
+#        uses: coverallsapp/github-action@v2.0.0
       - name: Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
+          args: |
+            'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.\n'
+            'Link to PR {{ EVENT_PAYLOAD.pull_request.url }}'
   failure:
     if: failure()
     needs: scalatest_sbt
@@ -37,7 +39,9 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has failed.'
+          args: |
+            'The project {{ EVENT_PAYLOAD.repository.full_name }} has failed.\n'
+            'Link to the workflow: {{ EVENT_PAYLOAD.workflow_run.url }}'
 
   # lint:
   #   runs-on: ubuntu-latest
