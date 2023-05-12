@@ -27,8 +27,8 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.\n'
-            'Link to PR {{ EVENT_PAYLOAD.pull_request.url }}'
+            The Pull Request '{{ EVENT_PAYLOAD.pull_request.title }}' can now automatically be merged.
+            Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
   failure:
     if: failure()
     needs: scalatest_sbt
@@ -40,8 +40,8 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            'The project {{ EVENT_PAYLOAD.repository.full_name }} has failed.\n'
-            'Link to the workflow: {{ EVENT_PAYLOAD.workflow_run.url }}'
+            The project {{ EVENT_PAYLOAD.repository.full_name }} has failed.
+            Link to the workflow: {{ EVENT_PAYLOAD.workflow_run.url }}
 
   # lint:
   #   runs-on: ubuntu-latest
