@@ -27,8 +27,7 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.\n'
-            'Link to PR {{ EVENT_PAYLOAD.pull_request.url }}'
+            {{ EVENT_PAYLOAD.pull_request.url }}
   failure:
     if: failure()
     needs: scalatest_sbt
