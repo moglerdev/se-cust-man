@@ -14,20 +14,21 @@ jobs:
   scalatest_sbt:
     runs-on: ubuntu-latest
     steps:
-#      - uses: actions/checkout@v2
-#      - name: Run tests
-#        run: sbt clean coverage test
-#      - name: Coverage Report
-#        run: sbt coverageReport
-#      - name: Coveralls GitHub Action
-#        uses: coverallsapp/github-action@v2.0.0
+      - uses: actions/checkout@v2
+      - name: Run tests
+        run: sbt clean coverage test
+      - name: Coverage Report
+        run: sbt coverageReport
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v2.0.0
       - name: Discord notification
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            The Pull Request '{{ EVENT_PAYLOAD.pull_request.title }}' can now automatically be merged.
+            **SUCCESS:** The Actions for the PR **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed.
+            You can now merge it.
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
   failure:
     if: failure()
@@ -40,8 +41,9 @@ jobs:
         uses: Ilshidur/action-discord@master
         with:
           args: |
-            The project {{ EVENT_PAYLOAD.repository.full_name }} has failed.
-            Link to the workflow: {{ EVENT_PAYLOAD.workflow_run.url }}
+            **FAILED:** **'{{ EVENT_PAYLOAD.pull_request.title }}'** failed.
+            Please check the logs and try again.
+            Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
 
   # lint:
   #   runs-on: ubuntu-latest
