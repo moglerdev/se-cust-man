@@ -3,12 +3,12 @@ name: Scala CI
 on:
   push:
     branches:
-        - master
-        - dev
+      - master
+      - dev
   pull_request:
     branches:
-        - master
-        - dev
+      - master
+      - dev
 
 jobs:
   scalatest_sbt:
@@ -21,6 +21,31 @@ jobs:
         run: sbt coverageReport
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.0.0
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
+            with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
+            Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
+  failure:
+    if: failure()
+    needs: scalatest_sbt
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: |
+            **:sob: FAILED :dizzy_face:** PR with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** that try
+            from branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** failed :bangbang: 
+            Please check the logs and try again.
+            Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
+
   # lint:
   #   runs-on: ubuntu-latest
   #   steps:
