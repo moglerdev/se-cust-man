@@ -21,15 +21,25 @@ jobs:
         run: sbt coverageReport
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.0.0
-      - name: Discord notification
+      - name: Discord notification (PR)
+        uses: Ilshidur/action-discord@master
+        if: github.event_name == 'pull_request' && success()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
         with:
           args: |
             **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
             with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
+      - name: Discord notification (NOT PR)
+        uses: Ilshidur/action-discord@master
+        if: github.event_name != 'pull_request' && success()
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions was successfully completed. :white_check_mark: 
+            Link to the Action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
   failure:
     if: failure()
     needs: scalatest_sbt
