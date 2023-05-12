@@ -23,7 +23,7 @@ jobs:
         uses: coverallsapp/github-action@v2.0.0
       - name: Discord notification
         uses: Ilshidur/action-discord@master
-        if: EVENT_PAYLOAD.pull_request != null && success()
+        if: pull_request != null && success()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
@@ -33,7 +33,7 @@ jobs:
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
       - name: Discord notification
         uses: Ilshidur/action-discord@master
-        if: EVENT_PAYLOAD.pull_request == null && success()
+        if: pull_request == null && success()
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
