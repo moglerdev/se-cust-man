@@ -22,14 +22,14 @@ jobs:
       - name: Coveralls GitHub Action
         uses: coverallsapp/github-action@v2.0.0
   discord:
-    if: failure()
     needs: scalatest_sbt
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
     steps:
+      - uses: Ilshidur/action-discord@master
       - name: Send Error To DC
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
+        if: failure()
         with:
           args: |
             **:sob: FAILED :dizzy_face:** PR with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** that try
@@ -38,20 +38,14 @@ jobs:
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
             
       - name: Send Success to DC with PR
-        uses: Ilshidur/action-discord@master
         if: github.event_name == 'pull_request' && success()
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
             **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
             with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
       - name: Send Success to DC without DC
-        uses: Ilshidur/action-discord@master
         if: github.event_name != 'pull_request' && success()
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         with:
           args: |
             **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions was successfully completed. :white_check_mark: 
