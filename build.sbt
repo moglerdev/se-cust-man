@@ -12,6 +12,5 @@ lazy val root = project
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % "test",
     coverageExcludedPackages := "*Main.scala",
     libraryDependencies += "org.scalatestplus" %% "mockito-4-6" % "3.2.15.0" % "test",
-    libraryDependencies += "com.typesafe.slick" %% "slick" % "3.5.0-M1",
     libraryDependencies += "org.postgresql" % "postgresql" % "42.6.0"
 )

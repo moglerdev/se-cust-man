@@ -9,7 +9,7 @@ import java.sql.Date
 // Bridge with Customer ?
 case class Address(id: Int, street: String, zip: String, city: String, isoCode: String)
 
-case class Customer(id: Int, name: String, address_id: Int, email: String, phone: String)
+case class Customer(id: Int, name: String, addressId: Int, email: String, phone: String)
 
 case class Project(id: Int, title: String, description: String, deadline: Date, customerId: Int)
 
