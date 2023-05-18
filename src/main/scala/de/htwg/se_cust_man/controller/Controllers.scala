@@ -1,4 +1,5 @@
-package de.htwg.se_cust_man
+package de.htwg.se_cust_man.controller
+import de.htwg.se_cust_man.Subject
 
 
 // ------------------------------------------------------------------------
