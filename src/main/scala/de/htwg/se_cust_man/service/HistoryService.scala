@@ -23,6 +23,7 @@ object HistoryService {
 }
 
 trait HistoryService {
+    def getCurrentId: Int
     def insertHistory(history: History, changes: Vector[HistoryChange]): History
     def getHistorys: Vector[History]
     def getChanges(historyId: Int): Vector[HistoryChange]
@@ -33,6 +34,22 @@ trait HistoryService {
 
 class HistoryServiceSql extends HistoryService {
     var conn : Connection = DB.connect
+
+    def getCurrentId : Int = {
+        if (conn.isClosed()) {
+            conn = DB.connect
+        }
+        val st = conn.createStatement();
+        val rs = st.executeQuery("SELECT last_value FROM history_id_seq");
+        var id = -1
+        if (rs.next()) {
+            id = rs.getInt(1)
+        }
+        rs.close();
+        st.close();
+        id
+    }    
+    
     def insertHistory(history: History, changes: Vector[HistoryChange]) = {
         if (conn.isClosed()) {
             conn = DB.connect
@@ -133,6 +150,7 @@ class HistoryServiceSql extends HistoryService {
 }
 
 class HistoryServiceRest extends HistoryService {
+  override def getCurrentId: Int = -1
 
   override def insertHistory(history: History, changes: Vector[HistoryChange]): History = ???
 

@@ -21,6 +21,7 @@ object AccountService {
     }
 }
 trait AccountService {
+    def getCurrentId : Int
     def insertAccount(account: Account): Account
     def updateAccount(account: Account): Account
     def getAccounts: Vector[Account]
@@ -31,6 +32,22 @@ trait AccountService {
 
 class AccountServiceSql extends AccountService {
     var conn : Connection = DB.connect
+
+    def getCurrentId : Int = {
+        if (conn.isClosed()) {
+            conn = DB.connect
+        }
+        val st = conn.createStatement();
+        val rs = st.executeQuery("SELECT last_value FROM account_id_seq");
+        var id = -1
+        if (rs.next()) {
+            id = rs.getInt(1)
+        }
+        rs.close();
+        st.close();
+        id
+    }
+
     def insertAccount(account: Account) = {
         if (conn.isClosed()) {
             conn = DB.connect
@@ -121,6 +138,9 @@ class AccountServiceSql extends AccountService {
 
 class AccountServiceJson extends AccountService {
     val file = "account.json"
+    
+    def getCurrentId: Int = -1
+
     def insertAccount(account: Account) = {
 
         account

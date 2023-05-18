@@ -22,6 +22,7 @@ object ProjectService {
 }
 
 trait ProjectService {
+    def getCurrentId: Int
     def insertProject(project: Project, tasks: Vector[Task]): Project
     def insertTask(task: Task): Task
     def updateProject(project: Project): Project
@@ -35,6 +36,22 @@ trait ProjectService {
 class ProjectServiceSql extends ProjectService {
 
     var conn : Connection = DB.connect
+
+    def getCurrentId : Int = {
+        if (conn.isClosed()) {
+            conn = DB.connect
+        }
+        val st = conn.createStatement();
+        val rs = st.executeQuery("SELECT last_value FROM project_id_seq");
+        var id = -1
+        if (rs.next()) {
+            id = rs.getInt(1)
+        }
+        rs.close();
+        st.close();
+        id
+    }
+
     def insertProject(project: Project, tasks: Vector[Task]) = {
         if (conn.isClosed()) {
             conn = DB.connect
@@ -153,6 +170,8 @@ class ProjectServiceSql extends ProjectService {
 }
 
 class ProjectServiceRest extends ProjectService {
+
+  override def getCurrentId: Int = -1
 
   override def removeTask(task: Task): Boolean = ???
 

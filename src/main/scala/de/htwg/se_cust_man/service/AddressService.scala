@@ -22,16 +22,32 @@ object AddressService {
 }
 
 trait AddressService {
+    def getCurrentId: Int
     def insertAddress(address: Address): Address
     def updateAddress(address: Address): Address
-    def getAddresss: Vector[Address]
+    def getAddresses: Vector[Address]
     def getAddressById(id: Int): Option[Address]
     def removeAddress(address: Address): Boolean
-
 }
 
 class AddressServiceSql extends AddressService {
     var conn : Connection = DB.connect
+
+    def getCurrentId : Int = {
+        if (conn.isClosed()) {
+            conn = DB.connect
+        }
+        val st = conn.createStatement();
+        val rs = st.executeQuery("SELECT last_value FROM address_id_seq");
+        var id = -1
+        if (rs.next()) {
+            id = rs.getInt(1)
+        }
+        rs.close();
+        st.close();
+        id
+    }
+
     def insertAddress(address: Address) = {
         if (conn.isClosed()) {
             conn = DB.connect
@@ -61,7 +77,7 @@ class AddressServiceSql extends AddressService {
         address
     }
 
-    def getAddresss: Vector[Address] = {
+    def getAddresses: Vector[Address] = {
         if (conn.isClosed()) {
             conn = DB.connect
         }
@@ -103,6 +119,8 @@ class AddressServiceSql extends AddressService {
 }
 
 class AddressServiceRest extends AddressService {
+    def getCurrentId: Int = -1
+    
     def insertAddress(address: Address) = {
         address
     }
@@ -112,7 +130,7 @@ class AddressServiceRest extends AddressService {
     def deleteAddress(address: Address) = {
         address
     }
-    def getAddresss: Vector[Address] = {
+    def getAddresses: Vector[Address] = {
         Vector()
     }
     def getAddressById(id: Int): Option[Address] = {

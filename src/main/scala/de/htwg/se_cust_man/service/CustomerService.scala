@@ -22,6 +22,7 @@ object CustomerService {
 }
 
 trait CustomerService {
+    def getCurrentId: Int
     def insertCustomer(customer: Customer): Customer
     def updateCustomer(customer: Customer): Customer
     def getCustomers: Vector[Customer]
@@ -33,6 +34,22 @@ trait CustomerService {
 
 class CustomerServiceSql extends CustomerService {
     var conn : Connection = DB.connect
+
+    def getCurrentId : Int = {
+        if (conn.isClosed()) {
+            conn = DB.connect
+        }
+        val st = conn.createStatement();
+        val rs = st.executeQuery("SELECT last_value FROM customer_id_seq");
+        var id = -1
+        if (rs.next()) {
+            id = rs.getInt(1)
+        }
+        rs.close();
+        st.close();
+        id
+    }
+
     def insertCustomer(customer: Customer) = {
         if (conn.isClosed()) {
             conn = DB.connect
@@ -119,6 +136,8 @@ class CustomerServiceSql extends CustomerService {
 }
 
 class CustomerServiceRest extends CustomerService {
+    
+    def getCurrentId: Int = -1
     def insertCustomer(customer: Customer) = {
         customer
     }
