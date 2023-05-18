@@ -27,12 +27,12 @@ class ChainHandler {
     var next: Option[ChainHandler] = None
 
     def setNext(handler: ChainHandler): ChainHandler = {
-        handler.next = Some(this)
+        next = Some(handler)
         handler
     }
 
     def handle(request: ChainRequest): ChainResponse = {
-        if (next.isEmpty) {
+        if (next.isDefined) {
             next.get.handle(request)
         } else {
             NoHandlerFoundRes()
@@ -45,12 +45,14 @@ object ChainHandler {
         val authHandler = new AuthenticateHandler()
         val checkAuthHandler = new CheckAuthHandler()
         val customerHandler = new CustomerHandler()
-        // val accountHandler = new AccountHandler()
+        val addressHandler = new AddressHandler()
         // val addressHandler = new AddressHandler()
         authHandler
             .setNext(checkAuthHandler)
             .setNext(customerHandler)
+            .setNext(addressHandler)
             // .setNext(accountHandler)
             // .setNext(addressHandler)
+        authHandler
     }
 }
