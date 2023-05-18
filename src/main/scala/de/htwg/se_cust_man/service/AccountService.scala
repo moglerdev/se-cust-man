@@ -11,10 +11,20 @@ import de.htwg.se_cust_man.{Account, DB}
 // https://refactoring.guru/design-patterns/proxy
 
 
+// https://refactoring.guru/design-patterns/factory-method
+object AccountService {
+    def getInstance(apiType: String) = {
+        apiType match {
+            case "sql" => new AccountServiceSql()
+            case "json" => new AccountServiceJson()
+        }
+    }
+}
 trait AccountService {
     def insertAccount(account: Account): Account
     def updateAccount(account: Account): Account
     def getAccounts: Vector[Account]
+    def getAccountByUsername(username: String): Option[Account]
     def getAccountById(id: Int): Option[Account]
     def removeAccount(account: Account): Boolean
 }
@@ -64,6 +74,23 @@ class AccountServiceSql extends AccountService {
         st.close();
         accounts
     }
+
+    def getAccountByUsername(username: String): Option[Account] = {
+        if (conn.isClosed()) {
+            conn = DB.connect
+        }
+        val st = conn.prepareStatement("SELECT * FROM account WHERE username = ?");
+        st.setString(1, username);
+        val rs = st.executeQuery();
+        var account: Option[Account] = None
+        if (rs.next()) {
+            account = Some(Account(rs.getInt("id"), rs.getString("username"), rs.getString("email"), rs.getString("hashed_password"), rs.getString("name")))
+        }
+        rs.close();
+        st.close();
+        account
+    }
+
     def getAccountById(id: Int): Option[Account] = {
         if (conn.isClosed()) {
             conn = DB.connect
@@ -92,8 +119,10 @@ class AccountServiceSql extends AccountService {
     }
 }
 
-class AccountServiceRest extends AccountService {
+class AccountServiceJson extends AccountService {
+    val file = "account.json"
     def insertAccount(account: Account) = {
+
         account
     }
     def updateAccount(account: Account) = {
@@ -108,7 +137,7 @@ class AccountServiceRest extends AccountService {
     def getAccountById(id: Int): Option[Account] = {
         None
     }
-    def getAccountByName(name: String): Option[Account] = {
+    def getAccountByUsername(username: String): Option[Account] = {
         None
     }
     def removeAccount(account: Account): Boolean = {

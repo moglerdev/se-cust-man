@@ -11,6 +11,16 @@ import de.htwg.se_cust_man.{Customer, DB}
 // https://refactoring.guru/design-patterns/proxy
 
 
+// https://refactoring.guru/design-patterns/factory-method
+object CustomerService {
+    def getInstance(apiType: String) = {
+        apiType match {
+            case "sql" => new CustomerServiceSql()
+            case "rest" => new CustomerServiceRest()
+        }
+    }
+}
+
 trait CustomerService {
     def insertCustomer(customer: Customer): Customer
     def updateCustomer(customer: Customer): Customer

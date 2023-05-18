@@ -12,6 +12,16 @@ import de.htwg.se_cust_man.HistoryChange
 // https://refactoring.guru/design-patterns/proxy
 
 
+// https://refactoring.guru/design-patterns/factory-method
+object HistoryService {
+    def getInstance(apiType: String) = {
+        apiType match {
+            case "sql" => new HistoryServiceSql()
+            case "rest" => new HistoryServiceRest()
+        }
+    }
+}
+
 trait HistoryService {
     def insertHistory(history: History, changes: Vector[HistoryChange]): History
     def getHistorys: Vector[History]

@@ -11,6 +11,16 @@ import de.htwg.se_cust_man.{Address, DB}
 // https://refactoring.guru/design-patterns/proxy
 
 
+// https://refactoring.guru/design-patterns/factory-method
+object AddressService {
+    def getInstance(apiType: String) = {
+        apiType match {
+            case "sql" => new AddressServiceSql()
+            case "rest" => new AddressServiceRest()
+        }
+    }
+}
+
 trait AddressService {
     def insertAddress(address: Address): Address
     def updateAddress(address: Address): Address

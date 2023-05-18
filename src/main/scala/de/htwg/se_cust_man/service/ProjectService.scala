@@ -11,6 +11,16 @@ import de.htwg.se_cust_man.{Project, Task, DB}
 // https://refactoring.guru/design-patterns/proxy
 
 
+// https://refactoring.guru/design-patterns/factory-method
+object ProjectService {
+    def getInstance(apiType: String) = {
+        apiType match {
+            case "sql" => new ProjectServiceSql()
+            case "rest" => new ProjectServiceRest()
+        }
+    }
+}
+
 trait ProjectService {
     def insertProject(project: Project, tasks: Vector[Task]): Project
     def insertTask(task: Task): Task
