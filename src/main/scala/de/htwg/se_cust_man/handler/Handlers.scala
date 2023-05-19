@@ -41,7 +41,7 @@ class ChainHandler {
 }
 
 object ChainHandler {
-    def getChain: ChainHandler = {
+    def createChain: ChainHandler = {
         val authHandler = new AuthenticateHandler()
         val checkAuthHandler = new CheckAuthHandler()
         val customerHandler = new CustomerHandler()
