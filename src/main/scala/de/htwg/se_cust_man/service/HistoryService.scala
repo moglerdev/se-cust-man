@@ -17,7 +17,7 @@ object HistoryService {
     def getInstance(apiType: String) = {
         apiType match {
             case "sql" => new HistoryServiceSql()
-            case "rest" => new HistoryServiceRest()
+            case "test" => new HistoryServiceTest()
         }
     }
 }
@@ -149,19 +149,41 @@ class HistoryServiceSql extends HistoryService {
     }
 }
 
-class HistoryServiceRest extends HistoryService {
-  override def getCurrentId: Int = -1
+class HistoryServiceTest extends HistoryService {
+  override def getCurrentId: Int = 1
 
-  override def insertHistory(history: History, changes: Vector[HistoryChange]): History = ???
+  override def insertHistory(history: History, changes: Vector[HistoryChange]): History = {
+    history
+  }
 
-  override def getChanges(historyId: Int): Vector[HistoryChange] = ???
+  override def getChanges(historyId: Int): Vector[HistoryChange] = {
+    Vector(
+        HistoryChange(id = 1, historyId = 1, fieldName = "name", oldValue = "oldName"),
+    )
+  }
 
-  override def getHistorysByObjectName(objectName: String): Vector[History] = ???
+  override def getHistorysByObjectName(objectName: String): Vector[History] = {
+    Vector(
+        History(id = 1, objectName = "Customer", objectId = 1, action = 'U', accountId = 1, timestamp = new java.sql.Timestamp(0)),
+    )
+  }
 
-  override def getHistorys: Vector[History] = ???
+  override def getHistorys: Vector[History] = {
+    Vector(
+        History(id = 1, objectName = "Customer", objectId = 1, action = 'U', accountId = 1, timestamp = new java.sql.Timestamp(0)),
+    )
+  }
 
-  override def getHistoryById(id: Int): Option[History] = ???
+  override def getHistoryById(id: Int): Option[History] = {
+    Some(
+        History(id = 1, objectName = "Customer", objectId = 1, action = 'U', accountId = 1, timestamp = new java.sql.Timestamp(0)),
+    )
+  }
 
-  override def getHistorysByObjectId(objectId: Int): Vector[History] = ???
+  override def getHistorysByObjectId(objectId: Int): Vector[History] = {
+    Vector(
+        History(id = 1, objectName = "Customer", objectId = 1, action = 'U', accountId = 1, timestamp = new java.sql.Timestamp(0)),
+    )
+  }
 
 }

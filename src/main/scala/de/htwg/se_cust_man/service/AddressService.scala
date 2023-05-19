@@ -16,7 +16,7 @@ object AddressService {
     def getInstance(apiType: String) = {
         apiType match {
             case "sql" => new AddressServiceSql()
-            case "rest" => new AddressServiceRest()
+            case "test" => new AddressServiceTest()
         }
     }
 }
@@ -118,11 +118,11 @@ class AddressServiceSql extends AddressService {
     }
 }
 
-class AddressServiceRest extends AddressService {
+class AddressServiceTest extends AddressService {
     def getCurrentId: Int = -1
     
     def insertAddress(address: Address) = {
-        address
+        address.copy(id = 999)
     }
     def updateAddress(address: Address) = {
         address
@@ -131,15 +131,18 @@ class AddressServiceRest extends AddressService {
         address
     }
     def getAddresses: Vector[Address] = {
-        Vector()
+        Vector(
+            Address(1, "street", "zip", "city", "isoCode"),
+            Address(2, "street", "zip", "city", "isoCode")
+        )
     }
     def getAddressById(id: Int): Option[Address] = {
-        None
-    }
-    def getAddressByName(name: String): Option[Address] = {
-        None
+        getAddresses.find(_.id == id)
     }
     def removeAddress(address: Address): Boolean = {
-        false
+        getAddresses.find(_.id == address.id) match {
+            case Some(_) => true
+            case None => false
+        }
     }
 }

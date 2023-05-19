@@ -16,7 +16,7 @@ object CustomerService {
     def getInstance(apiType: String) = {
         apiType match {
             case "sql" => new CustomerServiceSql()
-            case "rest" => new CustomerServiceRest()
+            case "test" => new CustomerServiceTest()
         }
     }
 }
@@ -135,11 +135,11 @@ class CustomerServiceSql extends CustomerService {
     }
 }
 
-class CustomerServiceRest extends CustomerService {
+class CustomerServiceTest extends CustomerService {
     
-    def getCurrentId: Int = -1
+    def getCurrentId: Int = 2
     def insertCustomer(customer: Customer) = {
-        customer
+        customer.copy(id = 999)
     }
     def updateCustomer(customer: Customer) = {
         customer
@@ -148,15 +148,17 @@ class CustomerServiceRest extends CustomerService {
         customer
     }
     def getCustomers: Vector[Customer] = {
-        Vector()
+        Vector(
+            Customer(1, "Test Customer 1", 1, "max@mustermann.de", "01234")
+        )
     }
     def getCustomerById(id: Int): Option[Customer] = {
-        None
+        getCustomers.find(_.id == id)
     }
     def getCustomerByName(name: String): Option[Customer] = {
-        None
+        getCustomers.find(_.name == name)
     }
     def removeCustomer(customer: Customer): Boolean = {
-        false
+        getCustomers.find(_.id == customer.id).isDefined
     }
 }

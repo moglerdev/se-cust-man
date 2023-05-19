@@ -16,7 +16,7 @@ object AccountService {
     def getInstance(apiType: String) = {
         apiType match {
             case "sql" => new AccountServiceSql()
-            case "json" => new AccountServiceJson()
+            case "test" => new AccountServiceTest()
         }
     }
 }
@@ -136,14 +136,12 @@ class AccountServiceSql extends AccountService {
     }
 }
 
-class AccountServiceJson extends AccountService {
-    val file = "account.json"
+class AccountServiceTest extends AccountService {
     
-    def getCurrentId: Int = -1
+    def getCurrentId: Int = 1
 
     def insertAccount(account: Account) = {
-
-        account
+        account.copy(id = 999)
     }
     def updateAccount(account: Account) = {
         account
@@ -152,15 +150,18 @@ class AccountServiceJson extends AccountService {
         account
     }
     def getAccounts: Vector[Account] = {
-        Vector()
+        Vector(
+            Account(1, "username", "email", "hashedPassword", "name"),
+            Account(2, "max", "max@musterman.de", "f6fc84c9f21c24907d6bee6eec38cabab5fa9a7be8c4a7827fe9e56f245bd2d5", "Max Mustermann"),
+        )
     }
     def getAccountById(id: Int): Option[Account] = {
-        None
+        getAccounts.find(_.id == id)
     }
     def getAccountByUsername(username: String): Option[Account] = {
-        None
+        getAccounts.find(_.username == username)
     }
     def removeAccount(account: Account): Boolean = {
-        false
+        true
     }
 }

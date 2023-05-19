@@ -16,7 +16,7 @@ object ProjectService {
     def getInstance(apiType: String) = {
         apiType match {
             case "sql" => new ProjectServiceSql()
-            case "rest" => new ProjectServiceRest()
+            case "test" => new ProjectServiceTest()
         }
     }
 }
@@ -59,7 +59,7 @@ class ProjectServiceSql extends ProjectService {
         val st = conn.prepareStatement("INSERT INTO project(title, description, deadline, customer_id) VALUES (?, ?, ?, ?)");
         st.setString(1, project.title);
         st.setString(2, project.description);
-        st.setDate(3, project.deadline);
+        st.setDate(3, new java.sql.Date(project.deadline.getTime()));
         st.setInt(4, project.customerId);
         st.executeUpdate();
         st.close();
@@ -91,7 +91,7 @@ class ProjectServiceSql extends ProjectService {
         val st = conn.prepareStatement("UPDATE project SET title = ?, description = ?, deadline = ?, customer_id = ? WHERE id = ?");
         st.setString(1, project.title);
         st.setString(2, project.description);
-        st.setDate(3, project.deadline);
+        st.setDate(3, new java.sql.Date(project.deadline.getTime()));
         st.setInt(4, project.customerId);
         st.setInt(5, project.id);
         st.executeUpdate();
@@ -169,7 +169,7 @@ class ProjectServiceSql extends ProjectService {
     }
 }
 
-class ProjectServiceRest extends ProjectService {
+class ProjectServiceTest extends ProjectService {
 
   override def getCurrentId: Int = -1
 
