@@ -1,7 +1,7 @@
 package de.htwg.se_cust_man
 
 import java.sql.Timestamp
-import java.sql.Date
+import java.util.Date
 
 // ------------------------------------------------------------------------
 // Models 
