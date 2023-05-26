@@ -23,17 +23,20 @@ case class CustomerController() extends Subject {
   var customers: Vector[Customer] = Vector()
 
   def addCustomer(customer: Customer): Unit = {
+    if (customers.find(c => c.name == customer.name).isDefined) return
     customers = customers.appended(customer)
     notifyObservers()
   }
 
   def removeCustomer(customer: Customer): Unit = {
+    if (customers.find(c => c.name == customer.name).isEmpty) return
     customers = customers.filterNot(_ == customer)
     notifyObservers()
   }
 
   def updateCustomer(customer: Customer): Unit = {
-    customers = customers.map(c => if (c == customer) customer else c)
+    if (customers.find(c => c.name == customer.name).isEmpty) return
+    customers = customers.map(c => if (c.name == customer.name) customer else c)
     notifyObservers()
   }
 

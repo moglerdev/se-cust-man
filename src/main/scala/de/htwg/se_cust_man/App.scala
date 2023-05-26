@@ -3,6 +3,7 @@ package de.htwg.se_cust_man
 import scala.::
 import scala.util.{Failure, Success, Try}
 
+import de.htwg.se_cust_man.{RedoCustomerCommand, UndoCustomerCommand}
 
 class App {
   val commandHistory = new CommandHistory()
@@ -10,19 +11,31 @@ class App {
   val customerController = new CustomerController()
 
   def executeCommand(command: CustomerCommand): Unit = {
-    command.execute()
-    commandHistory.add(command)
+    if (command.execute())
+      if (command.isInstanceOf[UndoCustomerCommand])
+        undoHistory.push(command)
+      else
+        commandHistory.push(command)
+
+    commandHistory.printHistory()
   }
 
-  def undo(): Unit = {
-    val command = commandHistory.undo()
+  def undo(): Boolean = {
+    val command = commandHistory.pop()
     if (command.isDefined) {
-      undoHistory.add(command.get)
+      customerController.setCustomers(command.get.backup.get)
+      true
     }
+    else false
   }
 
-  def redo(): Unit = {
-    customerController.setCustomers(undoHistory.undo().get.backup.get)
+  def redo(): Boolean = {
+    val command = undoHistory.pop()
+    if (command.isDefined) {
+      customerController.setCustomers(command.get.backup.get)
+      true
+    }
+    else false
   }
 
   def printHistory(): Unit = {
@@ -43,32 +56,31 @@ class App {
       executeCommand(new DeleteCustomerCommand(this, customerController))
       customerController.removeCustomer(customer)
     }))
-    .setNext(new CustomerCommandHandler("undo", (customer) => {
+    .setNext(new UndoHandler("undo", () => {
       executeCommand(new UndoCustomerCommand(this, customerController))
-      customerController.setCustomers(commandHistory.undo().get.backup.get)
     }))
-    .setNext(new CustomerCommandHandler("redo", (customer) => {
+    .setNext(new RedoHandler("redo", () => {
       executeCommand(new RedoCustomerCommand(this, customerController))
-      customerController.setCustomers(undoHistory.undo().get.backup.get)
     }))
-    .setNext(new CustomerCommandHandler("history", (customer) => {
-      executeCommand(new HistoryCustomerCommand(this, customerController))
-    }))
+    // .setNext(new HistoryHandler("history", (customer) => {
+    //   // executeCommand(new HistoryCustomerCommand(this, customerController))
+    // }))
     .setNext(new ExitHandler("exit"))
-    .setNext(new CustomerCommandHandler("printall", (customer) => {
-      executeCommand(new PrintCustomerCommand(this, customerController))
-      customerController.print()
+    .setNext(new PrintCustomerHandler("printall", (customer) => {
+      customerController.print();
     }))
-    .setNext(new CustomerCommandHandler("print", (customer) => {
-      executeCommand(new PrintCustomerCommand(this, customerController))
-      customerController.print(customer.name)
+    .setNext(new PrintCustomerHandler("print", (name) => {
+      customerController.print(name)
     }))
 
   def runner() : Unit = {
     while (true) {
       print("Enter command: ")
       val request = scala.io.StdIn.readLine()
-      handlers.handle(request)
+      handlers.handle(request) match
+        case Failure(exception) => println(exception.getMessage)
+        case Success(value) => println(value)
+      
     }
   }
 }

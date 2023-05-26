@@ -33,19 +33,23 @@ class CustomerCommandHandler(key: String, call: (customer: Customer) => Unit) ex
   }
 }
 
-class HistoryHandler(key: String) extends Handler {
+class HistoryHandler(key: String, call: (name: String) => Unit) extends Handler {
   override def handle(request: String): Try[Boolean] = {
     if (request.trim().startsWith(key)) {
+      if (request.trim().split(" ").length != 2) return Failure(new Exception("Invalid number of arguments: " + request.trim().split(" ").length + " expected 2"))
+      call(request.trim().split(" ")(1))
       Success(true)
     } else {
       super.handle(request)
     }
   }
 }
-
-class PrintCustomerHandler(key: String, name: String) extends Handler {
+class PrintCustomerHandler(key: String, call: (name: String) => Unit) extends Handler {
   override def handle(request: String): Try[Boolean] = {
     if (request.trim().startsWith(key)) {
+      if (request.trim().split(" ").length != 2)
+        return Failure(new Exception("Invalid number of arguments: " + request.trim().split(" ").length + " expected 2"))
+      call(request.trim().split(" ")(1))
       Success(true)
     } else {
       super.handle(request)
@@ -58,6 +62,28 @@ class ExitHandler(key: String) extends Handler {
     if (request.trim().startsWith(key)) {
       System.exit(0)
       Try(true)
+    } else {
+      super.handle(request)
+    }
+  }
+}
+
+class UndoHandler(key: String, call: () => Unit) extends Handler {
+  override def handle(request: String): Try[Boolean] = {
+    if (request.trim().startsWith(key)) {
+      call()
+      Success(true)
+    } else {
+      super.handle(request)
+    }
+  }
+}
+
+class RedoHandler(key: String, call: () => Unit) extends Handler {
+  override def handle(request: String): Try[Boolean] = {
+    if (request.trim().startsWith(key)) {
+      call()
+      Success(true)
     } else {
       super.handle(request)
     }

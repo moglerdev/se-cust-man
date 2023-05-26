@@ -20,49 +20,56 @@ abstract class CustomerCommand(val app: App, val ctrl: CustomerController) {
     }
   }
 
-  def execute(): Unit
+  def execute(): Boolean
 }
 
 
 class AddCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
     super.saveBackup()
-
+    true
   }
 }
 
 class UpdateCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
     super.saveBackup()
+    true
   }
 }
 
 class DeleteCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
     super.saveBackup()
+    true
   }
 }
 
 class UndoCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
+    saveBackup()
     app.undo()
   }
 }
 
 class RedoCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
+    saveBackup()
     app.redo()
   }
 }
 
 class PrintCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
+    saveBackup()
     ctrl.print()
+    false
   }
 }
 
 class HistoryCustomerCommand(app: App, ctrl: CustomerController) extends CustomerCommand(app, ctrl) {
-  override def execute(): Unit = {
+  override def execute(): Boolean = {
     println("HistoryCommand")
+    false
   }
 }
