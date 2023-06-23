@@ -12,6 +12,35 @@ This is a CRM (Customer Relationship Management) application developed as a stud
 
 ## Technologies Used
 - Scala
+- sbt
+- PostgreSQL
+- JSON
+- Docker
+
+
+### Design Patterns in use
+
+1. [Factory](https://refactoring.guru/design-patterns/factory-method)
+    - CustomerHandler -> create Insert, Update, Delete, ...
+    - Handlers -> createChain
+    - AccountService, AddressService, HistoryService, ProjectService, CustomerService -> `def getInstance(apiType: String)` 
+2. [Chain of Responsibility](https://refactoring.guru/design-patterns/chain-of-responsibility)
+    - Handlers (trait)
+    - AddressHandler
+    - AuthHandlers
+    - CustomerHandler
+3. [Proxy](https://refactoring.guru/design-patterns/proxy)
+    - AccountService
+    - AddressService
+    - CustomerService
+    - HistoryService
+    - ProjectService
+4. [Builder](https://refactoring.guru/design-patterns/builder)
+    - AccountBuilder
+    - Builder (trait)
+    - CustomerBuilder
+    - SqlBuilder (WIP)
+
 *TODO: write more*
 
 ## Installation

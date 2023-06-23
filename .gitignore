@@ -4,6 +4,9 @@
 # sql
 *.db
 
+# docker secrets
+*.secrets.txt
+
 # sbt specific
 dist/*
 target/
