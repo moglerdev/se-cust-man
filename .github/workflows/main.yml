@@ -1,57 +1,57 @@
 name: Scala CI
 
-on:
-  push:
-    branches:
-      - master
-      - dev
-  pull_request:
-    branches:
-      - master
-      - dev
+# on:
+#   push:
+#     branches:
+#       - master
+#       - dev
+#   pull_request:
+#     branches:
+#       - master
+#       - dev
 
-jobs:
-  scalatest_sbt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run tests
-        run: sbt clean coverage test
-      - name: Coverage Report
-        run: sbt coverageReport
-      - name: Coveralls GitHub Action
-        uses: coverallsapp/github-action@v2.0.0
-  discord:
-    needs: scalatest_sbt
-    runs-on: ubuntu-latest
-    env:
-      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-    steps:
-      - name: Send Error To DC
-        uses: Ilshidur/action-discord@master
-        if: failure()
-        with:
-          args: |
-            **:sob: FAILED :dizzy_face:** PR with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** that try
-            from branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** failed :bangbang: 
-            Please check the logs and try again.
-            Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
+# jobs:
+#   scalatest_sbt:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#       - name: Run tests
+#         run: sbt clean coverage test
+#       - name: Coverage Report
+#         run: sbt coverageReport
+#       - name: Coveralls GitHub Action
+#         uses: coverallsapp/github-action@v2.0.0
+#   discord:
+#     needs: scalatest_sbt
+#     runs-on: ubuntu-latest
+#     env:
+#       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+#     steps:
+#       - name: Send Error To DC
+#         uses: Ilshidur/action-discord@master
+#         if: failure()
+#         with:
+#           args: |
+#             **:sob: FAILED :dizzy_face:** PR with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** that try
+#             from branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** failed :bangbang: 
+#             Please check the logs and try again.
+#             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
             
-      - name: Send Success to DC with PR
-        uses: Ilshidur/action-discord@master
-        if: github.event_name == 'pull_request' && success()
-        with:
-          args: |
-            **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
-            with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
-            Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
-      - name: Send Success to DC without DC
-        uses: Ilshidur/action-discord@master
-        if: github.event_name != 'pull_request' && success()
-        with:
-          args: |
-            **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions was successfully completed. :white_check_mark: 
-            Link to the Action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+#       - name: Send Success to DC with PR
+#         uses: Ilshidur/action-discord@master
+#         if: github.event_name == 'pull_request' && success()
+#         with:
+#           args: |
+#             **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions for the PR from Branch **'{{ EVENT_PAYLOAD.pull_request.head.ref }}'** to Branch **'{{ EVENT_PAYLOAD.pull_request.base.ref }}'** 
+#             with the title **'{{ EVENT_PAYLOAD.pull_request.title }}'** was successfully completed. :white_check_mark: 
+#             Link to PR {{ EVENT_PAYLOAD.pull_request.html_url }}
+#       - name: Send Success to DC without DC
+#         uses: Ilshidur/action-discord@master
+#         if: github.event_name != 'pull_request' && success()
+#         with:
+#           args: |
+#             **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions was successfully completed. :white_check_mark: 
+#             Link to the Action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
   # lint:
   #   runs-on: ubuntu-latest
