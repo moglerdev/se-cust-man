@@ -16,10 +16,12 @@ class QuitCommand extends ICommand {
   }
 
   override def undo(): Boolean = {
+    // This command does not support undo operation
     false
   }
 
   override def redo(): Boolean = {
+    // This command does not support redo operation
     false
   }
 }

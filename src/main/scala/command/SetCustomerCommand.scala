@@ -10,6 +10,7 @@ import store.DBCustomerStore
 case class SetCustomerCommand(state: CustomerState, name: Option[String], email: Option[String], phone: Option[String], address: Option[String]) extends ICommand {
   val customer: Option[Customer] = state.get
 
+  // Executes the command by setting the specified customer properties
   override def execute(): Boolean = {
     val c = customer.getOrElse(Customer(-1, "", "", "", ""))
     val toSet = Customer(
@@ -23,11 +24,13 @@ case class SetCustomerCommand(state: CustomerState, name: Option[String], email:
     true
   }
 
+  // Undoes the command by reverting the customer state to its original value
   override def undo(): Boolean = {
     state.set(customer)
     true
   }
 
+  // Redoes the command by executing it again
   override def redo(): Boolean = {
     execute()
   }

@@ -6,12 +6,14 @@ class CommandInvoker {
   private var commandHistory: List[ICommand] = List.empty
   private var redoHistory: List[ICommand] = List.empty
 
+  // Executes the given command
   def executeCommand(command: ICommand): Unit = {
     command.execute()
     commandHistory = command :: commandHistory
     redoHistory = List.empty
   }
 
+  // Undoes the last executed command
   def undoCommand(): Unit = {
     if (commandHistory.nonEmpty) {
       val lastCommand = commandHistory.head
@@ -23,6 +25,7 @@ class CommandInvoker {
     }
   }
 
+  // Redoes the last undone command
   def redoCommand(): Unit = {
     if (redoHistory.nonEmpty) {
       val lastUndoneCommand = redoHistory.head
@@ -34,3 +37,4 @@ class CommandInvoker {
     }
   }
 }
+

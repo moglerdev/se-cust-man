@@ -13,7 +13,7 @@ lazy val root = (project in file("."))
     libraryDependencies += "com.google.inject" % "guice" % "7.0.0",
     libraryDependencies += "net.codingwell" %% "scala-guice" % "7.0.0",
     libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
-
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.3.0-SNAP4" % Test,
     libraryDependencies ++= Seq(
         "io.circe" %% "circe-core",
         "io.circe" %% "circe-generic",
