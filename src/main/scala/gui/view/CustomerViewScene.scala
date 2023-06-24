@@ -2,7 +2,7 @@ package de.htwg.scm
 package gui.view
 
 import com.google.inject.Guice
-import de.htwg.scm.models.{Customer, Project}
+import de.htwg.scm.model.{Customer, Project}
 import de.htwg.scm.store.IStore
 import scalafx.beans.property.{ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
