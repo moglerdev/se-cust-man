@@ -13,5 +13,11 @@ class CustomerState extends IState[Customer] {
     this
   }
 
-  override def get: Option[Customer] = customer
+  override def get: Customer = customer.get
+
+  override def option: Option[Customer] = customer
+
+  override def isDefined: Boolean = customer.isDefined
+
+  override def isEmpty: Boolean = customer.isEmpty
 }
