@@ -3,7 +3,7 @@ package gui.view
 
 import com.google.inject.Guice
 import de.htwg.scm.model.{Customer, Project}
-import de.htwg.scm.store.IStore
+import de.htwg.scm.store.{IStore, StoreModule}
 import scalafx.beans.property.{ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.control.{ContextMenu, MenuItem, TableColumn, TableView}
@@ -16,7 +16,7 @@ import scalafx.stage.{Modality, Stage}
 
 class CustomerViewScene(customer: Customer) extends Scene {
 
-  val injector = Guice.createInjector(new ScmModule)
+  val injector = Guice.createInjector(new StoreModule)
   val controller: IStore[Project] = injector.instance[IStore[Project]]
 
   val customerInfo: Node = new VBox {

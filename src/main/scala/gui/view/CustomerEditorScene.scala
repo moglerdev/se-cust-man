@@ -40,7 +40,7 @@ class CustomerEditorScene(
   cancelButton.onAction = _ => onClose()
 
 
-  val editorLayout = new VBox {
+  val editorLayout: VBox = new VBox {
     spacing = 10
     padding = Insets(10)
     children = Seq(
