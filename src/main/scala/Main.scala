@@ -4,7 +4,10 @@ import de.htwg.scm.gui.GuiApp
 import de.htwg.scm.tui.TuiApp
 
 import java.io.File
-object Hello {
+
+
+
+object Main {
   def main(args: Array[String]): Unit = {
     // args host begins with --dbhost 
     if (args.contains("--dbhost")) {
