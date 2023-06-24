@@ -2,9 +2,9 @@ package de.htwg.scm
 package observer
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class PublisherSpec extends WordSpec with Matchers {
+class PublisherSpec extends AnyWordSpec with Matchers {
 
   class TestObserver extends IObserver {
     var isPublished: Boolean = false
