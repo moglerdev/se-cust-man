@@ -3,6 +3,7 @@ package controller
 
 import store.IStore
 
+// Trait representing a controller for managing models
 trait IModelController[TModel] extends IPublisher {
   def add(model: TModel): Boolean
   def remove(model: TModel): Boolean
@@ -11,7 +12,8 @@ trait IModelController[TModel] extends IPublisher {
   def get(id: Int): Option[TModel]
 }
 
-abstract class ModelController[TModel] (store: IStore[TModel]) extends Publisher with IModelController[TModel] {
+// Abstract class serving as a base for model controllers
+abstract class ModelController[TModel](store: IStore[TModel]) extends Publisher with IModelController[TModel] {
   def add(model: TModel): Boolean = {
     val result = store.create(model) > 0
     if (result) publish()
