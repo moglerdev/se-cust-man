@@ -1,5 +1,5 @@
 package de.htwg.scm
-package models
+package model
 
 import java.time.LocalDateTime
 
