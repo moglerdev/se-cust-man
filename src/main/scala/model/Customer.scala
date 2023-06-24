@@ -7,7 +7,7 @@ object Customer {
 }
 
 class CustomerBuilder{
-  private var id: Int = 0
+   private var id: Int = -1
   private var name: String = ""
   private var email: String = ""
   private var phone: String = ""
