@@ -10,16 +10,17 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.WordSpec
 
 class ProjectControllerSpec extends WordSpec with Matchers with MockitoSugar {
-
-  // Create a mock store
-  val mockStore: IProjectStore = mock[IProjectStore]
-
-  // Create an instance of the ProjectController with the mock store
-  val projectController = new ProjectController(mockStore)
-
   "ProjectController" should {
 
     "get all projects by customer" in {
+
+      // Create a mock store
+      val mockStore: IProjectStore = mock[IProjectStore]
+
+      // Create an instance of the ProjectController with the mock store
+      val projectController = new ProjectController(mockStore)
+
+
       // Test data
       val customer = Customer.empty.copy(id = 1, name = "Test Customer")
       val projects = List(
@@ -41,6 +42,13 @@ class ProjectControllerSpec extends WordSpec with Matchers with MockitoSugar {
     }
 
     "get project by task" in {
+
+      // Create a mock store
+      val mockStore: IProjectStore = mock[IProjectStore]
+
+      // Create an instance of the ProjectController with the mock store
+      val projectController = new ProjectController(mockStore)
+
       // Test data
       val task = Task(1, 1, "Task 1", "Description 1")
 
@@ -62,6 +70,13 @@ class ProjectControllerSpec extends WordSpec with Matchers with MockitoSugar {
     }
 
     "filter projects by title and description" in {
+
+      // Create a mock store
+      val mockStore: IProjectStore = mock[IProjectStore]
+
+      // Create an instance of the ProjectController with the mock store
+      val projectController = new ProjectController(mockStore)
+
       // Test data
       val titleFilter = Some("Project 1")
       val descriptionFilter = Some("Description")

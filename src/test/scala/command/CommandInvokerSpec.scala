@@ -11,11 +11,11 @@ import org.mockito.verification.*
 
 class CommandInvokerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-  // Create a mock command
-  val mockCommand: ICommand = mock[ICommand]
-
   "CommandInvoker" should {
     "execute a command" in {
+
+      // Create a mock command
+      val mockCommand: ICommand = mock[ICommand]
       val invoker = new CommandInvoker
       invoker.executeCommand(mockCommand)
 
@@ -24,6 +24,9 @@ class CommandInvokerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "undo the last executed command" in {
+
+      // Create a mock command
+      val mockCommand: ICommand = mock[ICommand]
       val invoker = new CommandInvoker
       invoker.executeCommand(mockCommand)
       reset(mockCommand)
@@ -35,6 +38,9 @@ class CommandInvokerSpec extends AnyWordSpec with Matchers with MockitoSugar {
     }
 
     "redo the last undone command" in {
+
+      // Create a mock command
+      val mockCommand: ICommand = mock[ICommand]
       val invoker = new CommandInvoker
       invoker.executeCommand(mockCommand)
       invoker.undoCommand()

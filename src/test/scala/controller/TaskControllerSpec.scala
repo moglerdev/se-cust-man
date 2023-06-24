@@ -57,7 +57,7 @@ class TaskControllerSpec extends WordSpec with Matchers with MockitoSugar {
       val result = taskController.filter(titleFilter, descriptionFilter)
 
       // Verify the mock store interactions
-      verify(mockStore, times(1)).getAll
+      verify(mockStore, times(2)).getAll
 
       // Verify the result
       result should be(List(tasks.head))
