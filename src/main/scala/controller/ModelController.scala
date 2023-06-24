@@ -17,6 +17,7 @@ abstract class ModelController[TModel] (store: IStore[TModel]) extends Publisher
     if (result) publish()
     result
   }
+
   def remove(model: TModel): Boolean = {
     val result = store.delete(model) > 0
     if (result) publish()

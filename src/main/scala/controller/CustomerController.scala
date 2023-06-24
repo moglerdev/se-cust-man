@@ -2,11 +2,17 @@ package de.htwg.scm
 package controller
 import model.{Customer, Project, Task}
 
-import com.google.inject.{Guice, Injector}
-import de.htwg.scm.store._
+import com.google.inject.{Guice, Inject, Injector}
+import de.htwg.scm.store.*
 import net.codingwell.scalaguice.InjectorExtensions.*
 
-class CustomerController(store: ICustomerStore) extends ModelController[Customer](store) with ICustomerController {
+trait ICustomerController extends IModelController[Customer] {
+  def getByProject(project: Project): Option[Customer]
+  def filter(name: Option[String], email: Option[String], phone: Option[String]): List[Customer]
+}
+
+
+class CustomerController @Inject()(store: ICustomerStore) extends ModelController[Customer](store) with ICustomerController {
 
   def getByProject(project: Project): Option[Customer] = {
     store.getAll.find(_.id == project.customer_id)

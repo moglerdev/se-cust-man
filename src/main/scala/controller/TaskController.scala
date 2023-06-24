@@ -4,10 +4,17 @@ package controller
 import model.{Customer, Project, Task}
 
 import net.codingwell.scalaguice.InjectorExtensions.*
-import com.google.inject.Guice
-import store._
+import com.google.inject.{Guice, Inject}
+import store.*
 
-class TaskController(store: ITaskStore) extends ModelController[Task](store) with ITaskController {
+
+trait ITaskController extends IModelController[Task] {
+  def getAllByProject(project: Project): List[Task]
+  def filter(title: Option[String], description: Option[String]): List[Task]
+}
+
+
+class TaskController @Inject()(store: ITaskStore) extends ModelController[Task](store) with ITaskController {
   override def getAllByProject(project: Project): List[Task] = {
     store.getAll.filter(task => task.project_id == project.id)
   }
