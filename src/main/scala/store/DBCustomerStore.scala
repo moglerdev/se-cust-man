@@ -1,12 +1,12 @@
 package de.htwg.scm
 package store
 
-import models.{Customer, CustomerBuilder}
+import model.{Customer, CustomerBuilder}
 
 import java.sql.{Connection, PreparedStatement}
 
 
-class DBCustomerStore extends IStore[Customer] {
+class DBCustomerStore extends ICustomerStore {
   private val connection: Connection = DB.connect
 
   def disconnect(): Unit = {
@@ -62,6 +62,8 @@ class DBCustomerStore extends IStore[Customer] {
     statement.executeUpdate()
   }
 
+  override def delete(model: Customer): Int = delete(model.id)
+  
   override def getAll: List[Customer] = {
     val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM customer")
     val resultSet = statement.executeQuery()

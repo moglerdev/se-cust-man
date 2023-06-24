@@ -2,9 +2,9 @@ package de.htwg.scm
 package store
 
 import java.sql.{Connection, PreparedStatement}
-import models.Task
+import model.Task
 
-class DBTaskStore extends IStore[Task] {
+class DBTaskStore extends ITaskStore {
   private val connection: Connection = DB.connect
 
   def disconnect(): Unit = {
@@ -54,6 +54,8 @@ class DBTaskStore extends IStore[Task] {
     statement.setInt(1, id)
     statement.executeUpdate()
   }
+
+  override def delete(model: Task): Int = delete(model.id)
 
   override def getAll: List[Task] = {
     val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM task")
