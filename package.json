@@ -6,7 +6,7 @@
   "scripts": {
     "test": "sbt clean test",
     "prepare": "husky install",
-    "coverage": "sbt clean coverage test && sbt coverageReport"
+    "coverage": "sbt clean test coverage && sbt coverageReport"
   },
   "keywords": [],
   "author": "",
