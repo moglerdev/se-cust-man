@@ -5,11 +5,11 @@ import scala.util.{Failure, Success, Try}
 import tui.view.{ITuiView, TuiModelView}
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
 import scala.language.postfixOps
 
-class TuiModelViewSpec extends WordSpec with Matchers {
+class TuiModelViewSpec extends AnyWordSpec with Matchers {
 
   // Create a test implementation of ITuiView
   class TestTuiView(prefix: String) extends TuiModelView(prefix) {
