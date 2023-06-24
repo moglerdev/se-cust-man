@@ -3,7 +3,7 @@ package command
 
 import model.Task
 import state.TaskState
-import de.htwg.scm.model.Task
+import model.Task
 
 case class SetTaskCommand(state: TaskState, project_id: Int, title: Option[String], description: Option[String]) extends ICommand {
   val task: Option[Task] = state.get

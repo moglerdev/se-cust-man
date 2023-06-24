@@ -3,7 +3,7 @@ package command
 
 import model.Task
 import state.TaskState
-import de.htwg.scm.model.Task
+import model.Task
 
 case class OpenTaskCommand(state: TaskState, task: Task) extends ICommand {
   private val prevTask: Option[Task] = state.get
