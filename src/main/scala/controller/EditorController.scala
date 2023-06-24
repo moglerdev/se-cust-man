@@ -17,40 +17,31 @@ sealed trait IEditorController[TModel] {
   def close: Boolean
   def isOpen: Boolean
   def save: Boolean
-  def undo: Boolean
-  def redo: Boolean
 }
-
-trait EditorCommand
-
-case class OpenCommand[TModel](prev: TModel, model: TModel) extends EditorCommand
-case class UpdateCommand[TModel](prev: TModel, model: TModel) extends EditorCommand
 
 class EditorController[TModel] @Inject() (_store: IStore[TModel]) extends Publisher with IEditorController[TModel]  {
   private var _model: Option[TModel] = None
   private var _isNew: Boolean = false
   private var _isDirty: Boolean = false
 
-  private var _commands: List[EditorCommand] = List.empty
-
   override def create(model: TModel): Boolean = {
     _model = Some(model)
     _isDirty = true
-    notifySubscribers()
+    publish()
     true
   }
 
   override def open(id: Int): Boolean = {
     _model = Some(null.asInstanceOf[TModel])
     _isDirty = false
-    notifySubscribers()
+    publish()
     true
   }
 
   override def update(model: TModel): Boolean = {
     _model = Some(model)
     _isDirty = true
-    notifySubscribers()
+    publish()
     true
   }
 
@@ -58,7 +49,7 @@ class EditorController[TModel] @Inject() (_store: IStore[TModel]) extends Publis
 
   override def close: Boolean = {
     _model = None
-    notifySubscribers()
+    publish()
     true
   }
 
@@ -76,19 +67,11 @@ class EditorController[TModel] @Inject() (_store: IStore[TModel]) extends Publis
         if (res) {
           _isNew = false
           _isDirty = false
-          notifySubscribers()
+          publish()
         }
         res
       }
       case None => false
     }
-  }
-
-  override def undo: Boolean = {
-    throw new NotImplementedError()
-  }
-
-  override def redo: Boolean = {
-    throw new NotImplementedError()
   }
 }

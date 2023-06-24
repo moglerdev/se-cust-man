@@ -14,14 +14,14 @@ class SessionController extends Publisher with ISessionController {
     // TODO: Implement DB
     if (username == "user" && password == "pwd") {
       session = true
-      notifySubscribers()
+      publish()
       true
     } else false
   }
 
   override def signOut: Boolean = {
     session = false
-    notifySubscribers()
+    publish()
     true
   }
 

@@ -1,27 +1,32 @@
 package de.htwg.scm
 package controller
+import model.{Customer, Project, Task}
 
-import models._
+import com.google.inject.{Guice, Injector}
+import de.htwg.scm.store._
+import net.codingwell.scalaguice.InjectorExtensions.*
 
-trait IModelController[TModel] {
-  def add(customer: Customer): Boolean
-  def remove(customer: Customer): Boolean
-  def update(customer: Customer): Boolean
-  def getAll: List[TModel]
-  def get(id: Int): Option[TModel]
-}
+class CustomerController(store: ICustomerStore) extends ModelController[Customer](store) with ICustomerController {
 
-trait ICustomerController extends IModelController[Customer] {
-  def getProjects(customer: Customer): List[Project]
-}
+  def getByProject(project: Project): Option[Customer] = {
+    store.getAll.find(_.id == project.customer_id)
+  }
 
-trait IProjectController extends IModelController[Project] {
-  def getTasks(project: Project): List[Task]
-}
-
-trait ITaskController extends IModelController[Task] {
-}
-
-class CustomerController {
-
+  override def filter(name: Option[String], email: Option[String], phone: Option[String]): List[Customer] = {
+    store.getAll.filter(c => {
+      val nameFilter = name match {
+        case Some(n) => c.name.contains(n)
+        case None => true
+      }
+      val emailFilter = email match {
+        case Some(e) => c.email.contains(e)
+        case None => true
+      }
+      val phoneFilter = phone match {
+        case Some(p) => c.phone.contains(p)
+        case None => true
+      }
+      nameFilter && emailFilter && phoneFilter
+    })
+  }
 }
