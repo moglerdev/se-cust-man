@@ -18,7 +18,9 @@ lazy val root = (project in file("."))
         "io.circe" %% "circe-core",
         "io.circe" %% "circe-generic",
         "io.circe" %% "circe-parser"
-    ).map(_ % circeVersion)
+    ).map(_ % circeVersion),
+    libraryDependencies += "io.github.cdimascio" % "java-dotenv" % "5.2.2"
 
 
-  )
+
+)

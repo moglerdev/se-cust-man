@@ -6,24 +6,16 @@ services:
   db:
     image: scm/postgres
     build: ./sql
-    environment:
-      POSTGRES_DB: db
-      POSTGRES_USER: scm
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
       - "127.0.0.1:5432:5432"
-    secrets:
-      - db_password
+    env_file:
+      - .env
 
   cli:
     image: scm/cli
     build: .
 
-secrets:
-   db_password:
-     file: ./sql/db.secrets.txt
-    
 volumes:
   pgdata:
