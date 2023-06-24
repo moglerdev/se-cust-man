@@ -2,9 +2,9 @@ package de.htwg.scm
 package model
 
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class CustomerBuilderSpec extends WordSpec with Matchers {
+class CustomerBuilderSpec extends AnyWordSpec with Matchers {
 
   "CustomerBuilder" should {
 
