@@ -1,51 +1,44 @@
+package de.htwg.scm
 package command
 
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
-import de.htwg.scm.model.Project
-import de.htwg.scm.state.ProjectState
-import de.htwg.scm.command.OpenProjectCommand
+import org.scalatest.wordspec.AnyWordSpec
 
-class OpenProjectCommandSpec extends AnyFlatSpec with Matchers {
+import model.Project
+import state.ProjectState
 
-  val initialState = ProjectState()
-  val project = Project(1, 1, "Project X", "A sample project")
+class OpenProjectCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-  "An OpenProjectCommand" should "set the project in the state and return true when executed" in {
-    val command = OpenProjectCommand(initialState, project)
+  "An OpenProjectCommand" when {
+    val initialState: Option[Project] = None
+    val newState: Option[Project] = Some(Project(1, 1, "Project 1", "Description"))
 
-    val result = command.execute()
+    val mockState: ProjectState = mock[ProjectState]
+    when(mockState.option).thenReturn(initialState)
 
-    result should be(true)
+    val command: OpenProjectCommand = OpenProjectCommand(mockState, newState.get)
 
-    val currentState = initialState.get
-    currentState should be(Some(project))
-  }
+    "executed" should {
+      "set the state to the new project" in {
+        command.execute() shouldBe true
+        verify(mockState).set(newState)
+      }
+    }
 
-  it should "set the previous project in the state and return true when undone" in {
-    val command = OpenProjectCommand(initialState, project)
+    "undone" should {
+      "restore the state to the previous project" in {
+        command.undo() shouldBe true
+        verify(mockState).set(initialState)
+      }
+    }
 
-    command.execute()
-
-    val result = command.undo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(None)
-  }
-
-  it should "set the project in the state and return true when redone" in {
-    val command = OpenProjectCommand(initialState, project)
-
-    command.execute()
-    command.undo()
-
-    val result = command.redo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(project))
+    "redone" should {
+      "set the state back to the new project" in {
+        command.redo() shouldBe true
+        verify(mockState, times(2)).set(newState)
+      }
+    }
   }
 }

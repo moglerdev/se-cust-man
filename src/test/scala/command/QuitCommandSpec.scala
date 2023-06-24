@@ -1,40 +1,25 @@
-import org.scalatest.flatspec.AnyFlatSpec
+package de.htwg.scm
+package command
+
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-package de.htwg.scm.command
+import org.mockito.Mockito._
 
-class QuitCommandSpec extends AnyFlatSpec with Matchers {
+class QuitCommandSpec extends AnyWordSpec with Matchers {
+  "A QuitCommand" when {
+    val command: QuitCommand = new QuitCommand()
 
-  "A QuitCommand" should "execute successfully and exit the program" in {
-    val quitCommand = new QuitCommand()
+    "undone" should {
+      "return false as the command does not support undo" in {
+        command.undo() should be(false)
+      }
+    }
 
-    // Execute the command
-    val executeResult = quitCommand.execute()
-
-    // Verify that the command executed successfully
-    executeResult should be(true)
-
-    // TODO: Add additional assertions to test any necessary cleanup or finalization tasks
+    "redone" should {
+      "return false as the command does not support redo" in {
+        command.redo() should be(false)
+      }
+    }
   }
-
-  it should "not support undo operation" in {
-    val quitCommand = new QuitCommand()
-
-    // Attempt to undo the command
-    val undoResult = quitCommand.undo()
-
-    // Verify that undo is not supported
-    undoResult should be(false)
-  }
-
-  it should "not support redo operation" in {
-    val quitCommand = new QuitCommand()
-
-    // Attempt to redo the command
-    val redoResult = quitCommand.redo()
-
-    // Verify that redo is not supported
-    redoResult should be(false)
-  }
-
 }

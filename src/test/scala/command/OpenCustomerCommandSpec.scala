@@ -1,51 +1,44 @@
+package de.htwg.scm
 package command
 
-import org.scalatest.flatspec.AnyFlatSpec
+import command.OpenCustomerCommand
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import org.scalatest.matchers.should.Matchers
-import de.htwg.scm.model.Customer
-import de.htwg.scm.state.CustomerState
-import de.htwg.scm.command.OpenCustomerCommand
+import org.scalatest.wordspec.AnyWordSpec
+import model.Customer
+import state.CustomerState
 
-class OpenCustomerCommandSpec extends AnyFlatSpec with Matchers {
+class OpenCustomerCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-  val initialState = CustomerState()
-  val customer = Customer(1, "John Doe", "john.doe@example.com", "123 Main St", "555-1234")
+  "An OpenCustomerCommand" when {
+    val initialState: Option[Customer] = None
+    val newState: Option[Customer] = Some(Customer(1, "John Doe", "john@example.com", "1234567890", "Address"))
 
-  "An OpenCustomerCommand" should "set the customer in the state and return true when executed" in {
-    val command = OpenCustomerCommand(initialState, customer)
+    val mockState: CustomerState = mock[CustomerState]
+    when(mockState.option).thenReturn(initialState)
 
-    val result = command.execute()
+    val command: OpenCustomerCommand = OpenCustomerCommand(mockState, newState.get)
 
-    result should be(true)
+    "executed" should {
+      "set the state to the new customer" in {
+        command.execute() shouldBe true
+        verify(mockState).set(newState)
+      }
+    }
 
-    val currentState = initialState.get
-    currentState should be(Some(customer))
-  }
+    "undone" should {
+      "restore the state to the previous customer" in {
+        command.undo() shouldBe true
+        verify(mockState).set(initialState)
+      }
+    }
 
-  it should "set the previous customer in the state and return true when undone" in {
-    val command = OpenCustomerCommand(initialState, customer)
-
-    command.execute()
-
-    val result = command.undo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(None)
-  }
-
-  it should "set the customer in the state and return true when redone" in {
-    val command = OpenCustomerCommand(initialState, customer)
-
-    command.execute()
-    command.undo()
-
-    val result = command.redo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(customer))
+    "redone" should {
+      "set the state back to the new customer" in {
+        command.redo() shouldBe true
+        verify(mockState, times(2)).set(newState)
+      }
+    }
   }
 }
