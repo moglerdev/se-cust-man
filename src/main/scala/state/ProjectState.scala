@@ -1,7 +1,7 @@
 package de.htwg.scm
 package state
 
-import model.Project
+import model.{Project, Customer}
 
 class ProjectState extends IState[Project] {
   private var project: Option[Project] = None
@@ -11,5 +11,11 @@ class ProjectState extends IState[Project] {
     this
   }
 
-  override def get: Option[Project] = project
+  override def get: Project = project.get
+
+  override def option: Option[Project] = project
+
+  override def isDefined: Boolean = project.isDefined
+
+  override def isEmpty: Boolean = project.isEmpty
 }

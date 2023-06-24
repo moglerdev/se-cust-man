@@ -5,7 +5,7 @@ import model.Project
 import state.ProjectState
 
 case class SetProjectCommand(state: ProjectState, customer_id: Int, title: Option[String], description: Option[String]) extends ICommand {
-  val project: Option[Project] = state.get
+  val project: Option[Project] = state.option
 
   override def execute(): Boolean = {
     val c = project.getOrElse(Project(-1, -1, "", ""))

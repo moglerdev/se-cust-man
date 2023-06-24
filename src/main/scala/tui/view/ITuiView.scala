@@ -1,17 +1,38 @@
 package de.htwg.scm;
 package tui.view
 
-import com.google.inject.Guice
+import com.google.inject.{Guice, Injector}
 
-trait  ITuiView {
-    val injector = Guice.createInjector(new ScmModule)
+import scala.io.StdIn.readLine
+import scala.util.matching.Regex
+import scala.util.{Failure, Try}
+
+
+trait ITuiView extends IDispose {
+    def setNext(next: ITuiView): ITuiView
+    def handle(command: String): Try[String]
+    def dispose(): Unit
 }
 
-abstract TuiView {
+abstract class TuiModelView(val prefix: String) extends ITuiView {
+    val pattern: Regex = """^(\w+)\s+(\w+)(?:\s+(.*))?$""".r
 
-    val injector = Guice.createInjector(new ScmModule)
+    private var next: Option[ITuiView] = None
+    def setNext(next: ITuiView): ITuiView = {
+        this.next = Some(next)
+        next
+    }
 
-    def prompt(): {
+    def handleCommand(command: String, args: String): Try[String]
 
+    def handle(command: String): Try[String] = {
+        command match {
+            case "exit" => Try("exit")
+            case pattern(_, cmd, args) => handleCommand(cmd, args)
+            case _ => next match {
+                case Some(n) => n.handle(command)
+                case None => Failure(new Exception("No matching command found"))
+            }
+        }
     }
 }
