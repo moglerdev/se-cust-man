@@ -1,44 +1,39 @@
 package de.htwg.scm
 package tui
 
-import controller.{EditorController, SessionController, Subscriber}
-
 import com.google.inject.Guice
-import models.{Customer, Project, Task}
-
+import de.htwg.scm.controller.*
+import de.htwg.scm.store.*
+import de.htwg.scm.tui.view.{ITuiView, TuiTaskView}
 import net.codingwell.scalaguice.InjectorExtensions.*
-import de.htwg.scm.ScmModule
-import de.htwg.scm.store.{DBCustomerStore, IStore, DBProjectStore}
-import de.htwg.scm.tui.handler.{AuthHandler, CloseHandler, CustomerHandler, IHandler, Request}
 
 import scala.io.StdIn
+import scala.util.{Failure, Success}
 
 object TuiApp {
+  def buildViews(): ITuiView = {
+    val injector = Guice.createInjector(new ControllerModule, new StoreModule)
+    val customerController: ICustomerController = injector.instance[ICustomerController]
+    val projectController: IProjectController = injector.instance[IProjectController]
+    val taskController: ITaskController = injector.instance[ITaskController]
+
+//    val customerView = new CustomerView(customerController)
+//    val projectView = new ProjectView(projectController)
+    val task = new TuiTaskView(taskController)
+    task
+  }
   def start(): Unit = {
-    val injector = Guice.createInjector(new ScmModule)
-    val cusStr = injector.instance[IStore[Customer]]
-    val prjStr = injector.instance[IStore[Project]]
-    val tskStr = injector.instance[IStore[Task]]
-  
-    val customer = new EditorController[Customer](cusStr)
-    val project = new EditorController[Project](prjStr)
-    val task = new EditorController[Task](tskStr)
-    val session = new SessionController()
-  
-    val h1 = new CloseHandler()
-    h1.setNext(new AuthHandler(session))
-      .setNext(new CustomerHandler(customer))
-  
-    println("Welcome to Se-Cust-Man")
+
+    val views = buildViews()
     var running = true
     while (running) {
-      val read = StdIn.readLine("prompt> ")
-      val ret = h1.handle(Request(read))
-      if (ret == ".exit") running = false
-      else println(ret)
+      StdIn.readLine("prompt> ") match {
+        case "exit" => running = false
+        case input => views.handle(input) match
+          case Success(msg) => println(msg)
+          case Failure(exception) => println(s"[ERROR] ${exception.getMessage}")
+      }
     }
-    println("Bye!")
-  
   }
 
 }
