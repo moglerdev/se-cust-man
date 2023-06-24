@@ -19,8 +19,11 @@ lazy val root = (project in file("."))
         "io.circe" %% "circe-generic",
         "io.circe" %% "circe-parser"
     ).map(_ % circeVersion),
-    libraryDependencies += "io.github.cdimascio" % "java-dotenv" % "5.2.2"
+     libraryDependencies += "io.github.cdimascio" % "java-dotenv" % "5.2.2",
+    libraryDependencies += "org.mockito" % "mockito-core" % "5.4.0" % Test,
+    libraryDependencies += "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
 
 
 
-)
+
+  )
