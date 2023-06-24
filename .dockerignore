@@ -1,0 +1,13 @@
+.husky/
+.bloop/
+node_modules/
+.github/
+.idea
+.vscode
+docs
+sheets
+target/
+.gitignore
+package.json
+pnpm-lock.yaml
+.git

@@ -11,7 +11,7 @@ import scalafx.scene.input.KeyCode.D
 class ScmModule extends AbstractModule with ScalaModule {
   override def configure(): Unit = {
     bind[IStore[Customer]].to[XMLCustomerStore]
-    bind[IStore[Project]].to[DBProjectStore]
+    bind[IStore[Project]].to[XMLProjectStore]
     bind[IStore[Task]].to[XMLTaskStore]
   }
 }
