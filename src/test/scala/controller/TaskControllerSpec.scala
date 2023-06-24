@@ -7,9 +7,9 @@ import model.{Project, Task}
 
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class TaskControllerSpec extends WordSpec with Matchers with MockitoSugar {
+class TaskControllerSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
   // Create a mock store
   val mockStore: ITaskStore = mock[ITaskStore]

@@ -7,9 +7,9 @@ import store.IStore
 
 import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class ModelControllerSpec extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
+class ModelControllerSpec extends AnyWordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
 
   // Create a mock store
   val mockStore: IStore[Model] = mock[IStore[Model]]

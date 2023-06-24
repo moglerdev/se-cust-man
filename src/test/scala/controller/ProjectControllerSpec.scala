@@ -7,9 +7,9 @@ import store.IProjectStore
 import model.{Customer, Project, Task}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class ProjectControllerSpec extends WordSpec with Matchers with MockitoSugar {
+class ProjectControllerSpec extends AnyWordSpec with Matchers with MockitoSugar {
   "ProjectController" should {
 
     "get all projects by customer" in {
