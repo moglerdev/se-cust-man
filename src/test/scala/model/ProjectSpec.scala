@@ -1,8 +1,9 @@
+package de.htwg.scm
 package model
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.scm.model.{Customer, Project}
+import model.{Customer, Project}
 
 class ProjectSpec extends AnyFlatSpec with Matchers {
 
