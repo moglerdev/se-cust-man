@@ -1,132 +1,105 @@
-import org.scalatest.flatspec.AnyFlatSpec
+package de.htwg.scm
+package controller
+
+import org.scalatest.BeforeAndAfterEach
+import org.scalatestplus.mockito.MockitoSugar
+import store.IStore
+
+import org.mockito.Mockito.{reset, times, verify, when}
 import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.WordSpec
 
-import de.htwg.scm.controller.ModelController
-import de.htwg.scm.store.IStore
+class ModelControllerSpec extends WordSpec with Matchers with MockitoSugar with BeforeAndAfterEach {
 
-class ModelControllerSpec extends AnyFlatSpec with Matchers {
+  // Create a mock store
+  val mockStore: IStore[Model] = mock[IStore[Model]]
 
-  // Mock store implementation for testing
-  class MockStore[TModel] extends IStore[TModel] {
-    private var models: List[TModel] = List.empty
+  // Create an instance of the ModelController with the mock store
+  val modelController: ModelController[Model] = new ModelController[Model](mockStore) {}
 
-    def create(item: TModel): Int = {
-      models = item :: models
-      1 // Simulate successful creation
+  // Define the Model class for testing purposes
+  case class Model(id: Int, name: String)
+
+  // Test data
+  val testModel: Model = Model(1, "Test Model")
+  val updatedModel: Model = Model(1, "Updated Model")
+
+  override def beforeEach(): Unit = {
+    // Reset the mock store before each test
+    reset(mockStore)
+  }
+
+  "ModelController" should {
+
+    "add a model successfully" in {
+      // Set up the mock store behavior
+      when(mockStore.create(testModel)).thenReturn(1)
+
+      // Call the add method
+      val result = modelController.add(testModel)
+
+      // Verify the mock store interactions
+      verify(mockStore, times(1)).create(testModel)
+
+      // Verify the result
+      result should be(true)
     }
 
-    def update(id: Int, item: TModel): Int = {
-      models = models.map {
-        case m if m == item => item
-        case m => m
-      }
-      1 // Simulate successful update
+    "remove a model successfully" in {
+      // Set up the mock store behavior
+      when(mockStore.delete(testModel)).thenReturn(1)
+
+      // Call the remove method
+      val result = modelController.remove(testModel)
+
+      // Verify the mock store interactions
+      verify(mockStore, times(1)).delete(testModel)
+
+      // Verify the result
+      result should be(true)
     }
 
-    def delete(item: TModel): Int = {
-      models = models.filterNot(_ == item)
-      1 // Simulate successful deletion
+    "update a model successfully" in {
+      // Set up the mock store behavior
+      when(mockStore.update(testModel.id, updatedModel)).thenReturn(1)
+
+      // Call the update method
+      val result = modelController.update(testModel.id, updatedModel)
+
+      // Verify the mock store interactions
+      verify(mockStore, times(1)).update(testModel.id, updatedModel)
+
+      // Verify the result
+      result should be(true)
     }
 
-    def read(id: Int): Option[TModel] = models.lift(id)
+    "get all models" in {
+      // Set up the mock store behavior
+      val expectedModels = List(testModel)
+      when(mockStore.getAll).thenReturn(expectedModels)
 
-    def getAll: List[TModel] = models
-  }
+      // Call the getAll method
+      val models = modelController.getAll
 
-  "A ModelController" should "add a model" in {
-    // Create a test model
-    val model = "TestModel"
+      // Verify the mock store interactions
+      verify(mockStore, times(1)).getAll
 
-    // Create a mock store
-    val store = new MockStore[String]
+      // Verify the result
+      models should be(expectedModels)
+    }
 
-    // Create a ModelController with the mock store
-    val controller = new ModelController[String](store) {}
+    "get a model by ID" in {
+      // Set up the mock store behavior
+      when(mockStore.read(testModel.id)).thenReturn(Some(testModel))
 
-    // Add the model
-    val result = controller.add(model)
+      // Call the get method
+      val result = modelController.get(testModel.id)
 
-    // Verify that the model was added
-    result should be(true)
-    controller.getAll should contain only model
-  }
+      // Verify the mock store interactions
+      verify(mockStore, times(1)).read(testModel.id)
 
-  it should "remove a model" in {
-    // Create a test model
-    val model = "TestModel"
-
-    // Create a mock store
-    val store = new MockStore[String]
-    store.create(model)
-
-    // Create a ModelController with the mock store
-    val controller = new ModelController[String](store) {}
-
-    // Remove the model
-    val result = controller.remove(model)
-
-    // Verify that the model was removed
-    result should be(true)
-    controller.getAll should be(empty)
-  }
-
-  it should "update a model" in {
-    // Create a test model
-    val model = "TestModel"
-
-    // Create a mock store
-    val store = new MockStore[String]
-    store.create(model)
-
-    // Create a ModelController with the mock store
-    val controller = new ModelController[String](store) {}
-
-    // Update the model
-    val updatedModel = "UpdatedModel"
-    val result = controller.update(0, updatedModel)
-
-    // Verify that the model was updated
-    result should be(true)
-    controller.getAll should contain only updatedModel
-  }
-
-  it should "get all models" in {
-    // Create test models
-    val model1 = "Model 1"
-    val model2 = "Model 2"
-
-    // Create a mock store
-    val store = new MockStore[String]
-    store.create(model1)
-    store.create(model2)
-
-    // Create a ModelController with the mock store
-    val controller = new ModelController[String](store) {}
-
-    // Get all models
-    val allModels = controller.getAll
-
-    // Verify that all models are retrieved
-    allModels should contain theSameElementsAs List(model1, model2)
-  }
-
-  it should "get a model by ID" in {
-    // Create test models
-    val model1 = "Model 1"
-    val model2 = "Model 2"
-
-    // Create a mock store
-    val store = new MockStore[String]
-    store.create(model1)
-    store.create(model2)
-
-    // Create a ModelController with the mock store
-    val controller = new ModelController[String](store) {}
-
-    // Get a model by ID
-    val retrievedModel = controller.get(1)
-
-    // Verify that the correct model is retrieved
-    retrievedModel should be(Some(model2))
+      // Verify the result
+      result should be(Some(testModel))
+    }
   }
 }
