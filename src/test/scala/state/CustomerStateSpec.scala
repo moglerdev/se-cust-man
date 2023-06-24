@@ -3,9 +3,9 @@ package state
 
 import model.Customer
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class CustomerStateSpec extends WordSpec with Matchers {
+class CustomerStateSpec extends AnyWordSpec with Matchers {
 
   "CustomerState" should {
 

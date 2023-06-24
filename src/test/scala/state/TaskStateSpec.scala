@@ -3,9 +3,9 @@ package state
 
 import model.Task
 import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.WordSpec
+import org.scalatest.wordspec.AnyWordSpec
 
-class TaskStateSpec extends WordSpec with Matchers {
+class TaskStateSpec extends AnyWordSpec with Matchers {
 
   "TaskState" should {
 
