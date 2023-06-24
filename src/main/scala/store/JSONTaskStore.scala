@@ -1,7 +1,7 @@
 package de.htwg.scm
 package store
 
-import models.Task
+import model.Task
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
@@ -9,7 +9,7 @@ import java.nio.file.{Files, Paths}
 
 import scala.collection.mutable.ListBuffer
 
-class JSONTaskStore extends IStore[Task] {
+class JSONTaskStore extends ITaskStore {
   private val filePath: String = "tasks.json"
   private var tasks: ListBuffer[Task] = readTasksFromFile()
 
@@ -66,6 +66,8 @@ class JSONTaskStore extends IStore[Task] {
       0 // indicates failure
     }
   }
+
+  override def delete(model: Task): Int = delete(model.id)
 
   override def getAll: List[Task] = {
     tasks.toList

@@ -1,5 +1,5 @@
 package de.htwg.scm
-package models
+package model
 
 case class Task(id: Int, project_id: Int, title: String, description: String)
 

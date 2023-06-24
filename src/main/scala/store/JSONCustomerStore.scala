@@ -1,7 +1,7 @@
 package de.htwg.scm
 package store
 
-import models.{Customer, CustomerBuilder}
+import model.{Customer, CustomerBuilder}
 
 import java.io.{File, FileWriter, IOException}
 import scala.io.Source
@@ -11,7 +11,7 @@ import io.circe.parser._
 import io.circe.syntax._
 import io.circe.{Decoder, Encoder, Json, Printer}
 
-class JSONCustomerStore extends IStore[Customer] {
+class JSONCustomerStore extends ICustomerStore {
   private val jsonFilePath: String = "store/customers.json"
   private val printer: Printer = Printer.spaces2.copy(dropNullValues = true)
 
@@ -53,6 +53,8 @@ class JSONCustomerStore extends IStore[Customer] {
       -1  // Invalid ID
     }
   }
+
+  override def delete(model: Customer): Int = delete(model.id)
 
   override def getAll: List[Customer] = {
     try {

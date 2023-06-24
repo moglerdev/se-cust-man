@@ -4,10 +4,11 @@ version: '3.1'
 services:
 
   db:
-    image: postgres:alpine3.18
-    restart: always
+    image: scm/postgres
+    build: ./sql
     environment:
-      POSTGRES_USER: okay
+      POSTGRES_DB: db
+      POSTGRES_USER: scm
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -16,9 +17,13 @@ services:
     secrets:
       - db_password
 
+  cli:
+    image: scm/cli
+    build: .
+
 secrets:
    db_password:
-     file: db.secrets.txt
+     file: ./sql/db.secrets.txt
     
 volumes:
   pgdata:

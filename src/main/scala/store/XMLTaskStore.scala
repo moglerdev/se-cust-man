@@ -3,9 +3,9 @@ package store
 
 import java.io.{File, PrintWriter}
 import scala.xml.XML
-import de.htwg.scm.models.{Project, Task}
+import de.htwg.scm.model.{Project, Task}
 
-class XMLTaskStore extends IStore[Task] {
+class XMLTaskStore extends ITaskStore {
   private val xmlFilePath: String = "store/tasks.xml"
 
   override def create(model: Task): Int = {
@@ -33,6 +33,8 @@ class XMLTaskStore extends IStore[Task] {
     saveTasksToXML(updatedTasks)
     id
   }
+
+  override def delete(model: Task): Int = delete(model.id)
 
   override def getAll: List[Task] = {
     loadTasksFromXML()

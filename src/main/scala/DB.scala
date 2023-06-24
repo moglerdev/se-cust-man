@@ -5,9 +5,11 @@ import java.sql.Connection
 
 object DB {
   val driver = "org.postgresql.Driver"
-  val url = "jdbc:postgresql://192.168.178.72/postgres"
-  val username = "postgres"
-  val password = "UQ0KLI7DrTDSFsNQ"
+  var host = "db"
+  var db = "db"
+  def url = s"jdbc:postgresql://${host}/${db}"
+  val username = "scm"
+  val password = "scm"
 
   def connect: Connection = {
     DriverManager.getConnection(s"$url?user=$username&password=$password");

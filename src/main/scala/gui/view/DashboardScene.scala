@@ -3,7 +3,7 @@ package gui.view
 
 
 import com.google.inject.{Guice, Injector}
-import de.htwg.scm.models.Customer
+import de.htwg.scm.model.Customer
 import de.htwg.scm.store.IStore
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage

@@ -1,12 +1,12 @@
 package de.htwg.scm
 package store
 
-import de.htwg.scm.models.Project
+import de.htwg.scm.model.Project
 
 import java.sql.{Connection, PreparedStatement}
 
 
-class DBProjectStore extends IStore[Project] {
+class DBProjectStore extends IProjectStore {
   private val connection: Connection = DB.connect
 
   def disconnect(): Unit = {
@@ -56,6 +56,8 @@ class DBProjectStore extends IStore[Project] {
     statement.setInt(1, id)
     statement.executeUpdate()
   }
+
+  override def delete(model: Project): Int = delete(model.id)
 
   override def getAll: List[Project] = {
     val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM project")

@@ -1,7 +1,7 @@
 package de.htwg.scm
 package gui.view
 
-import de.htwg.scm.models.Project
+import de.htwg.scm.model.Project
 import de.htwg.scm.store.IStore
 import scalafx.Includes._
 import scalafx.application.JFXApp3

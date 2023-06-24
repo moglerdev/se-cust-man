@@ -1,17 +1,27 @@
 package de.htwg.scm
-package models
+package model
 
 case class Customer(id: Int, name: String, email: String, phone: String, address: String)
 object Customer {
   def empty: Customer = Customer(-1, "", "", "", "")
 }
 
-class CustomerBuilder {
+class CustomerBuilder{
   private var id: Int = 0
   private var name: String = ""
   private var email: String = ""
   private var phone: String = ""
   private var address: String = ""
+
+  // constructor with Customer
+  def this(customer: Customer) = {
+    this()
+    this.id = customer.id
+    this.name = customer.name
+    this.email = customer.email
+    this.phone = customer.phone
+    this.address = customer.address
+  }
 
   def setId(id: Int): CustomerBuilder = {
     this.id = id
