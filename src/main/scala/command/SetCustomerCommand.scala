@@ -8,7 +8,7 @@ import store.DBCustomerStore
 
 // Command for modifying a customer
 case class SetCustomerCommand(state: CustomerState, name: Option[String], email: Option[String], phone: Option[String], address: Option[String]) extends ICommand {
-  val customer: Option[Customer] = state.get
+  val customer: Option[Customer] = state.option
 
   override def execute(): Boolean = {
     val c = customer.getOrElse(Customer(-1, "", "", "", ""))

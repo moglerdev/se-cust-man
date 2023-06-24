@@ -6,7 +6,7 @@ import state.TaskState
 import model.Task
 
 case class OpenTaskCommand(state: TaskState, task: Task) extends ICommand {
-  private val prevTask: Option[Task] = state.get
+  private val prevTask: Option[Task] = state.option
 
   override def execute(): Boolean = {
     state.set(Some(task))
