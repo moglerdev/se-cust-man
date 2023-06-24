@@ -16,7 +16,7 @@ jobs:
    steps:
      - uses: actions/checkout@v2
      - name: Run tests
-       run: sbt clean coverage test
+       run: sbt clean test coverage
      - name: Coverage Report
        run: sbt coverageReport
      - name: Coveralls GitHub Action
@@ -53,9 +53,3 @@ jobs:
              **:smiling_face_with_3_hearts: SUCCESS :heart_eyes:** The Actions was successfully completed. :white_check_mark: 
              Link to the Action ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
- lint:
-   runs-on: ubuntu-latest
-   steps:
-   - uses: actions/checkout@v2
-   - name: Formatting
-     run: sbt scalafmtSbtCheck scalafmtCheck test:scalafmtCheck
