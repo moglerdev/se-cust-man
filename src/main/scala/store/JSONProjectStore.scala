@@ -1,7 +1,7 @@
 package de.htwg.scm
 package store
 
-import de.htwg.scm.models.Project
+import de.htwg.scm.model.Project
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
@@ -9,7 +9,7 @@ import java.nio.file.{Files, Paths}
 
 import scala.collection.mutable.ListBuffer
 
-class JSONProjectStore extends IStore[Project] {
+class JSONProjectStore extends IProjectStore {
   private val filePath: String = "projects.json"
   private var projects: ListBuffer[Project] = readProjectsFromFile()
 
@@ -66,6 +66,8 @@ class JSONProjectStore extends IStore[Project] {
       0 // indicates failure
     }
   }
+
+  override def delete(model: Project): Int = delete(model.id)
 
   override def getAll: List[Project] = {
     projects.toList
