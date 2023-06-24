@@ -1,12 +1,12 @@
 package de.htwg.scm
 package store
 
-import de.htwg.scm.models.Customer
+import de.htwg.scm.model.Customer
 
 import java.io.{File, PrintWriter}
 import scala.xml.XML
 
-class XMLCustomerStore extends IStore[Customer] {
+class XMLCustomerStore extends ICustomerStore {
   private val xmlFilePath: String = "store/customers.xml"
 
   override def create(model: Customer): Int = {
@@ -35,6 +35,8 @@ class XMLCustomerStore extends IStore[Customer] {
     saveCustomersToXML(updatedCustomers)
     id
   }
+
+  override def delete(model: Customer): Int = delete(model.id)
 
   override def getAll: List[Customer] = {
     loadCustomersFromXML()
