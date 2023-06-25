@@ -1,10 +1,10 @@
 package de.htwg.scm
-package gui.view
+package view.tui.gui
 
+import scalafx.geometry.Insets
 import scalafx.scene.control.{Button, PasswordField, TextField}
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.scene.text.Text
-import scalafx.geometry.Insets
 
 class SignInView {
   val usernameLabel = new Text("Username:")

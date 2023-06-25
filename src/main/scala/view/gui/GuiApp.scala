@@ -1,7 +1,6 @@
 package de.htwg.scm
-package gui
+package view.tui.gui
 
-import de.htwg.scm.gui.view.{DashboardScene, SignInScene}
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene

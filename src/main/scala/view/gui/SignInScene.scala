@@ -1,5 +1,5 @@
 package de.htwg.scm
-package gui.view
+package view.tui.gui
 
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage

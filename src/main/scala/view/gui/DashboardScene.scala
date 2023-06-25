@@ -1,19 +1,19 @@
 package de.htwg.scm
-package gui.view
+package view.tui.gui
 
+import model.Customer
+import store.{IStore, StoreModule}
 
 import com.google.inject.{Guice, Injector}
-import de.htwg.scm.model.Customer
-import de.htwg.scm.store.{IStore, StoreModule}
+import net.codingwell.scalaguice.InjectorExtensions.*
 import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.beans.property.{IntegerProperty, ReadOnlyObjectProperty, ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
 import scalafx.scene.Scene
-import scalafx.scene.control.{Button, ContentDisplay, ContextMenu, Label, MenuItem, TableCell, TableColumn, TableView}
+import scalafx.scene.control.*
 import scalafx.scene.layout.VBox
 import scalafx.stage.{Modality, Stage}
-import net.codingwell.scalaguice.InjectorExtensions.*
 
 class DashboardScene extends Scene {
   val injector: Injector = Guice.createInjector(new StoreModule)
