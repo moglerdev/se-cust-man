@@ -3,6 +3,8 @@
 ![ci_cd](https://img.shields.io/github/actions/workflow/status/moglerdev/se-cust-man/main.yml?style=for-the-badge)
 ![branch size](https://img.shields.io/github/repo-size/moglerdev/se-cust-man?style=for-the-badge)
 
+**For more detailed information about the project, please refer to the [Wiki Page](https://github.com/moglerdev/se-cust-man/wiki)**
+
 ## About It 
 
 The ongoing project at HTWG University in the field of Software Engineering focuses on the agile development of a Customer Relationship Management (CRM) system. The project aims to design a well-thought-out software architecture. The CRM system assists businesses in managing customer relationships and includes features such as contact management, sales activities, and marketing initiatives. By utilizing agile methodologies like Scrum or Kanban and leveraging modern technologies, the project aims to create a flexible, scalable, and maintainable solution. The project team collaborates closely with stakeholders and users to gather continuous feedback and make adjustments to the CRM system according to requirements and quality standards.
