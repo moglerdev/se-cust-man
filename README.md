@@ -1,4 +1,14 @@
-# Se-Cust-Man (CRM Application)
+```
+   $$$$$$\                     $$$$$$\                        $$\           $$\      $$\                      
+  $$  __$$\                   $$  __$$\                       $$ |          $$$\    $$$ |                    
+  $$ /  \__| $$$$$$\          $$ /  \__|$$\   $$\  $$$$$$$\ $$$$$$\         $$$$\  $$$$ | $$$$$$\  $$$$$$$\  
+  \$$$$$$\  $$  __$$\ $$$$$$\ $$ |      $$ |  $$ |$$  _____|\_$$  _|$$$$$$\ $$\$$\$$ $$ | \____$$\ $$  __$$\ 
+   \____$$\ $$$$$$$$ |\______|$$ |      $$ |  $$ |\$$$$$$\    $$ |  \______|$$ \$$$  $$ | $$$$$$$ |$$ |  $$ |
+  $$\   $$ |$$   ____|        $$ |  $$\ $$ |  $$ | \____$$\   $$ |$$\       $$ |\$  /$$ |$$  __$$ |$$ |  $$ |
+  \$$$$$$  |\$$$$$$$\         \$$$$$$  |\$$$$$$  |$$$$$$$  |  \$$$$  |      $$ | \_/ $$ |\$$$$$$$ |$$ |  $$ |
+   \______/  \_______|         \______/  \______/ \_______/    \____/       \__|     \__| \_______|\__|  \
+```
+
 ![coveralls](https://gitlab.com/moglerdev/cxx_cam/-/raw/split_code/COVERAGE.svg)
 ![ci_cd](https://img.shields.io/github/actions/workflow/status/moglerdev/se-cust-man/main.yml?style=for-the-badge)
 ![branch size](https://img.shields.io/github/repo-size/moglerdev/se-cust-man?style=for-the-badge)
