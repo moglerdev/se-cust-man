@@ -1,11 +1,7 @@
 package de.htwg.scm
 
-import gui.GuiApp
-import tui.TuiApp
-
-import java.io.File
-
-
+import view.gui.GuiApp
+import view.tui.TuiApp
 
 object Main {
   def main(args: Array[String]): Unit = {
