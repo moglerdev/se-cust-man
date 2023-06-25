@@ -2,9 +2,35 @@ package de.htwg.scm
 package model
 
 case class Customer(id: Int, name: String, email: String, phone: String, address: String)
+
 object Customer {
   def empty: Customer = Customer(-1, "", "", "", "")
+
+  def apply(args: String): Customer = {
+    val idReg = """-i\s+(\d+)""".r
+    val nameReg = """-n\s+([^-]*)""".r
+    val emailReg = """-e\s+([^-]*)""".r
+    val phoneReg = """-p\s+([^-]*)""".r
+    val addressReg = """-a\s+([^-]*)""".r
+
+    var id: Option[Int] = None
+    var name: Option[String] = None
+    var email: Option[String] = None
+    var phone: Option[String] = None
+    var address: Option[String] = None
+
+    // Extract values from command line arguments
+    idReg.findFirstMatchIn(args).foreach(m => id = Some(m.group(1).toInt))
+    nameReg.findFirstMatchIn(args).foreach(m => name = Some(m.group(1)))
+    emailReg.findFirstMatchIn(args).foreach(m => email = Some(m.group(1)))
+    phoneReg.findFirstMatchIn(args).foreach(m => phone = Some(m.group(1)))
+    addressReg.findFirstMatchIn(args).foreach(m => address = Some(m.group(1)))
+
+    Customer(id.getOrElse(-1), name.map(_.trim).getOrElse(""), email.map(_.trim).getOrElse(""),
+      phone.map(_.trim).getOrElse(""), address.map(_.trim).getOrElse(""))
+  }
 }
+
 
 class CustomerBuilder{
     private var id: Int = -1
