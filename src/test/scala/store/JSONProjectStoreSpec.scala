@@ -1,132 +1,110 @@
+package de.htwg.scm
 package store
 
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
-import java.nio.file.{Files, Paths}
 import de.htwg.scm.model.Project
-import de.htwg.scm.store.JSONProjectStore
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.BeforeAndAfter
+import org.scalatest.matchers.should.Matchers
 
-class JSONProjectStoreSpec extends AnyFlatSpec with Matchers {
+import java.nio.file.{Files, Paths}
 
-  val filePath = "projects.json"
-  var store: JSONProjectStore = _
+class JSONProjectStoreSpec extends AnyFlatSpec with Matchers with BeforeAndAfter {
+  val testFilePath: String = "test_projects.json"
+  var projectStore: JSONProjectStore = _
 
-  def cleanupTestData(): Unit = {
-    val path = Paths.get(filePath)
-    if (Files.exists(path)) {
-      Files.delete(path)
-    }
+  before {
+    // Create a new JSONProjectStore instance for each test case
+    projectStore = new JSONProjectStore()
   }
 
-  "A JSONProjectStore" should "create a new project and return the generated ID" in {
-    cleanupTestData()
+  after {
+    // Delete the test file after each test case
+    Files.deleteIfExists(Paths.get(testFilePath))
+  }
 
-    store = new JSONProjectStore()
+  "JSONProjectStore" should "create a new project" in {
+    val project = Project(1, 1, "Test Project", "Description")
+    val projectId = projectStore.create(project)
 
-    val project = Project(0, "New Project", "This is a new project")
-
-    val createdId = store.create(project)
-
-    createdId should be(1)
-
-    val retrievedProject = store.read(createdId)
-    retrievedProject should be(Some(project.copy(id = createdId)))
-
-    cleanupTestData()
+    projectId should be > 0
+    val retrievedProject = projectStore.read(projectId)
+    retrievedProject shouldBe Some(project.copy(id = projectId))
   }
 
   it should "read an existing project by ID" in {
-    cleanupTestData()
+    val project = Project(1, 1, "Test Project", "Description")
+    val projectId = projectStore.create(project)
 
-    store = new JSONProjectStore()
-
-    val project = Project(1, "Test Project", "This is a test project")
-
-    store.create(project)
-
-    val retrievedProject = store.read(1)
-
-    retrievedProject should be(Some(project))
-
-    cleanupTestData()
+    val retrievedProject = projectStore.read(projectId)
+    retrievedProject shouldBe Some(project.copy(id = projectId))
   }
 
-  it should "update an existing project by ID" in {
-    cleanupTestData()
-
-    store = new JSONProjectStore()
-
-    val project = Project(1, "Old Project", "This is an old project")
-
-    store.create(project)
-
-    val updatedProject = Project(1, "Updated Project", "This is an updated project")
-
-    val result = store.update(1, updatedProject)
-
-    result should be(1)
-
-    val retrievedProject = store.read(1)
-    retrievedProject should be(Some(updatedProject))
-
-    cleanupTestData()
+  it should "return None when reading a non-existing project" in {
+    val retrievedProject = projectStore.read(999)
+    retrievedProject shouldBe None
   }
 
-  it should "delete a project by ID" in {
-    cleanupTestData()
+  it should "update an existing project" in {
+    val project = Project(1, 1, "Test Project", "Description")
+    val projectId = projectStore.create(project)
 
-    store = new JSONProjectStore()
+    val updatedProject = Project(projectId, 1,"Updated Project", "Updated Description")
+    val result = projectStore.update(projectId, updatedProject)
 
-    val project = Project(1, "Project to Delete", "This is a project to delete")
-
-    store.create(project)
-
-    val result = store.delete(1)
-
-    result should be(1)
-
-    val retrievedProject = store.read(1)
-    retrievedProject should be(None)
-
-    cleanupTestData()
+    result shouldBe 1
+    val retrievedProject = projectStore.read(projectId)
+    retrievedProject shouldBe Some(updatedProject)
   }
 
-  it should "retrieve all projects" in {
-    cleanupTestData()
-
-    store = new JSONProjectStore()
-
-    val project1 = Project(1, "Project 1", "This is project 1")
-    val project2 = Project(2, "Project 2", "This is project 2")
-
-    store.create(project1)
-    store.create(project2)
-
-    val projects = store.getAll
-
-    projects should have size 2
-
-    projects should contain(project1)
-    projects should contain(project2)
-
-    cleanupTestData()
+  it should "return 0 when updating a non-existing project" in {
+    val result = projectStore.update(999, Project(999, 1, "Updated Project", "Updated Description"))
+    result shouldBe 0
   }
 
-  it should "retrieve the last inserted project's ID" in {
-    cleanupTestData()
+  it should "delete an existing project by ID" in {
+    val project = Project(1, 1, "Test Project", "Description")
+    val projectId = projectStore.create(project)
 
-    store = new JSONProjectStore()
+    val result = projectStore.delete(projectId)
+    result shouldBe 1
+    val retrievedProject = projectStore.read(projectId)
+    retrievedProject shouldBe None
+  }
 
-    val project1 = Project(1, "Project 1", "This is project 1")
-    val project2 = Project(2, "Project 2", "This is project 2")
+  it should "return 0 when deleting a non-existing project" in {
+    val result = projectStore.delete(999)
+    result shouldBe 0
+  }
 
-    store.create(project1)
-    store.create(project2)
+  it should "delete an existing project by model" in {
+    val project = Project(1, 1, "Test Project", "Description")
+    val projectId = projectStore.create(project)
 
-    val lastId = store.getLastId
+    val result = projectStore.delete(project)
+    result shouldBe 1
+    val retrievedProject = projectStore.read(projectId)
+    retrievedProject shouldBe None
+  }
 
-    lastId should be(2)
+  it should "return all projects" in {
+    val project1 = Project(1, 1, "Project 1", "Description 1")
+    val project2 = Project(2, 1, "Project 2", "Description 2")
+    val project3 = Project(3, 1, "Project 3", "Description 3")
+    projectStore.create(project1)
+    projectStore.create(project2)
+    projectStore.create(project3)
 
-    cleanupTestData()
+    val allProjects = projectStore.getAll
+    allProjects should contain theSameElementsAs List(project1, project2, project3)
+  }
+
+  it should "return the last project ID" in {
+    val project1 = Project(1, 1, "Project 1", "Description 1")
+    val project2 = Project(2, 1, "Project 2", "Description 2")
+    projectStore.create(project1)
+    projectStore.create(project2)
+
+    val lastId = projectStore.getLastId
+    lastId shouldBe 2
   }
 }

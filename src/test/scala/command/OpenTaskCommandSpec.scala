@@ -1,51 +1,45 @@
+package de.htwg.scm
 package command
 
-import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito._
 import org.scalatest.matchers.should.Matchers
-import de.htwg.scm.model.Task
-import de.htwg.scm.state.TaskState
-import de.htwg.scm.command.OpenTaskCommand
+import org.scalatest.wordspec.AnyWordSpec
 
-class OpenTaskCommandSpec extends AnyFlatSpec with Matchers {
+import model.Task
+import state.TaskState
 
-  val initialState = TaskState()
-  val task = Task(1, 1, "Task A", "A sample task")
 
-  "An OpenTaskCommand" should "set the task in the state and return true when executed" in {
-    val command = OpenTaskCommand(initialState, task)
+class OpenTaskCommandSpec extends AnyWordSpec with Matchers with MockitoSugar {
 
-    val result = command.execute()
+  "An OpenTaskCommand" when {
+    val initialState: Option[Task] = None
+    val newState: Option[Task] = Some(Task(1, 1, "Task 1", "Description"))
 
-    result should be(true)
+    val mockState: TaskState = mock[TaskState]
+    when(mockState.option).thenReturn(initialState)
 
-    val currentState = initialState.get
-    currentState should be(Some(task))
-  }
+    val command: OpenTaskCommand = OpenTaskCommand(mockState, newState.get)
 
-  it should "set the previous task in the state and return true when undone" in {
-    val command = OpenTaskCommand(initialState, task)
+    "executed" should {
+      "set the state to the new task" in {
+        command.execute() shouldBe true
+        verify(mockState).set(newState)
+      }
+    }
 
-    command.execute()
+    "undone" should {
+      "restore the state to the previous task" in {
+        command.undo() shouldBe true
+        verify(mockState).set(initialState)
+      }
+    }
 
-    val result = command.undo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(None)
-  }
-
-  it should "set the task in the state and return true when redone" in {
-    val command = OpenTaskCommand(initialState, task)
-
-    command.execute()
-    command.undo()
-
-    val result = command.redo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(task))
+    "redone" should {
+      "set the state back to the new task" in {
+        command.redo() shouldBe true
+        verify(mockState, times(2)).set(newState)
+      }
+    }
   }
 }

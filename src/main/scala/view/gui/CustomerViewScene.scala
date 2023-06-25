@@ -1,17 +1,18 @@
 package de.htwg.scm
-package gui.view
+package view.tui.gui
+
+import model.{Customer, Project}
+import store.{IStore, StoreModule}
 
 import com.google.inject.Guice
-import de.htwg.scm.model.{Customer, Project}
-import de.htwg.scm.store.{IStore, StoreModule}
+import net.codingwell.scalaguice.InjectorExtensions.*
 import scalafx.beans.property.{ReadOnlyObjectWrapper, StringProperty}
 import scalafx.collections.ObservableBuffer
+import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.control.{ContextMenu, MenuItem, TableColumn, TableView}
 import scalafx.scene.layout.{HBox, VBox}
 import scalafx.scene.text.Text
 import scalafx.scene.{Node, Scene}
-import net.codingwell.scalaguice.InjectorExtensions.*
-import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.stage.{Modality, Stage}
 
 class CustomerViewScene(customer: Customer) extends Scene {

@@ -1,9 +1,10 @@
 package de.htwg.scm
-package gui.view
+package view.tui.gui
 
-import de.htwg.scm.model.Project
-import de.htwg.scm.store.IStore
-import scalafx.Includes._
+import model.Project
+import store.IStore
+
+import scalafx.Includes.*
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.collections.ObservableBuffer

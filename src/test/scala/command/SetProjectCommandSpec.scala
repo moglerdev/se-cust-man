@@ -1,57 +1,37 @@
+package de.htwg.scm
 package command
 
-import org.scalatest.flatspec.AnyFlatSpec
+import model.Project
+import state.ProjectState
 import org.scalatest.matchers.should.Matchers
-import de.htwg.scm.model.Project
-import de.htwg.scm.state.ProjectState
-import de.htwg.scm.command.SetProjectCommand
+import org.scalatest.wordspec.AnyWordSpec
 
-class SetProjectCommandSpec extends AnyFlatSpec with Matchers {
+class SetProjectCommandSpec extends AnyWordSpec with Matchers {
+  "A SetProjectCommand" when {
+    val initialState: Option[Project] = Some(Project(1, 1, "Project A", "Description A"))
+    val state: ProjectState = new ProjectState()
+    state.set(initialState)
+    val command: SetProjectCommand = SetProjectCommand(state, 2, Some("Project B"), None)
 
-  val initialState = ProjectState()
-  val initialProject = Project(1, 1, "Project A", "A sample project")
+    "executed" should {
+      "set the specified project properties" in {
+        command.execute() should be(true)
+        state.get should be(Project(1, 2, "Project B", "Description A"))
+      }
+    }
 
-  "A SetProjectCommand" should "set the project in the state with the provided values and return true when executed" in {
-    val command = SetProjectCommand(initialState, 2, Some("New Title"), Some("New Description"))
+    "undone" should {
+      "revert the project state to its original value" in {
+        command.undo() should be(true)
+        state.get should be(initialState.get)
+      }
+    }
 
-    initialState.set(Some(initialProject))
-
-    val result = command.execute()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(Project(1, 2, "New Title", "New Description")))
-  }
-
-  it should "set the previous project in the state and return true when undone" in {
-    val command = SetProjectCommand(initialState, 2, Some("New Title"), Some("New Description"))
-
-    initialState.set(Some(initialProject))
-
-    command.execute()
-
-    val result = command.undo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(initialProject))
-  }
-
-  it should "set the project in the state with the provided values and return true when redone" in {
-    val command = SetProjectCommand(initialState, 2, Some("New Title"), Some("New Description"))
-
-    initialState.set(Some(initialProject))
-
-    command.execute()
-    command.undo()
-
-    val result = command.redo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(Project(1, 2, "New Title", "New Description")))
+    "redone" should {
+      "execute the command again and set the specified project properties" in {
+        command.redo() should be(true)
+        state.get should be(Project(1, 2, "Project B", "Description A"))
+      }
+    }
   }
 }

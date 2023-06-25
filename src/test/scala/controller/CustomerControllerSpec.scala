@@ -1,77 +1,35 @@
+package de.htwg.scm
 package controller
 
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
-
-package de.htwg.scm.controller
-
-import model.{Customer, Project}
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.Mockito.*
 import store.ICustomerStore
+import model.{Customer, Project}
+import controller.CustomerController
 
-class CustomerControllerSpec extends AnyFlatSpec with Matchers {
+import org.scalatest.funspec.AnyFunSpec
 
-  // Mock customer store implementation for testing
-  class MockCustomerStore extends ICustomerStore {
-    private var customers: List[Customer] = List.empty
+class CustomerControllerSpec extends AnyFunSpec with MockitoSugar {
 
-    def getAll: List[Customer] = customers
-    def create(customer: Customer): Int = {
-      customers = customers :+ customer
-      customer.id // Simulate assigning an ID to the customer
+  describe("CustomerController") {
+    val mockCustomerStore: ICustomerStore = mock[ICustomerStore]
+    val customerController: ICustomerController = new CustomerController(mockCustomerStore)
+
+    val customer1 = Customer(1, "John Doe", "john@example.com", "1234567890", "123 Main St")
+    val customer2 = Customer(2, "Jane Smith", "jane@example.com", "9876543210", "456 Elm St")
+    val project = Project(1, 1, "Project 1", "Description")
+
+    it("should return the customer associated with a project") {
+      when(mockCustomerStore.getAll).thenReturn(List(customer1, customer2))
+      val result = customerController.getByProject(project)
+      assert(result.contains(customer1))
     }
-    def delete(customer: Customer): Int = {
-      customers = customers.filterNot(_.id == customer.id)
-      1 // Simulate successful deletion
+
+    it("should filter customers based on name, email, and phone") {
+      when(mockCustomerStore.getAll).thenReturn(List(customer1, customer2))
+      val result = customerController.filter(Some("John"), None, Some("1234567890"))
+      assert(result.size == 1)
+      assert(result.head == customer1)
     }
-    def update(id: Int, customer: Customer): Int = {
-      customers.find(_.id == id) match {
-        case Some(existingCustomer) =>
-          customers = customers.filterNot(_.id == id) :+ customer
-          1 // Simulate successful update
-        case None => 0 // Simulate failure to find the customer
-      }
-    }
-    def read(id: Int): Option[Customer] = customers.find(_.id == id)
-  }
-
-  "A CustomerController" should "retrieve the customer associated with the specified project" in {
-    // Create a test customer and project
-    val customer = Customer(1, "John Doe", "john@example.com", "123456789")
-    val project = Project(1, "Project 1", "Project description", customer.id)
-
-    // Create a mock customer store
-    val store = new MockCustomerStore
-    store.create(customer)
-
-    // Create a CustomerController with the mock store
-    val controller = new CustomerController(store)
-
-    // Retrieve the customer associated with the project
-    val result = controller.getByProject(project)
-
-    // Verify that the correct customer was retrieved
-    result should be(Some(customer))
-  }
-
-  it should "filter the customers based on the specified criteria" in {
-    // Create test customers
-    val customer1 = Customer(1, "John Doe", "john@example.com", "123456789")
-    val customer2 = Customer(2, "Alice Smith", "alice@example.com", "987654321")
-    val customer3 = Customer(3, "Bob Johnson", "bob@example.com", "456123789")
-
-    // Create a mock customer store
-    val store = new MockCustomerStore
-    store.create(customer1)
-    store.create(customer2)
-    store.create(customer3)
-
-    // Create a CustomerController with the mock store
-    val controller = new CustomerController(store)
-
-    // Filter the customers by name and email
-    val filteredCustomers = controller.filter(Some("John"), Some("example.com"), None)
-
-    // Verify that the correct customers were filtered
-    filteredCustomers should contain theSameElementsAs List(customer1)
   }
 }

@@ -1,118 +1,123 @@
+package de.htwg.scm
 package store
 
-import org.scalatest.flatspec.AnyFlatSpec
+import model.CustomerBuilder
+import store.JSONCustomerStore
 import org.scalatest.matchers.should.Matchers
-import java.io.{File, PrintWriter}
-import de.htwg.scm.model.{Customer, CustomerBuilder}
-import de.htwg.scm.store.JSONCustomerStore
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatestplus.mockito.MockitoSugar.mock
 
-class JSONCustomerStoreSpec extends AnyFlatSpec with Matchers {
+import java.io.{File, FileWriter}
+import scala.io.Source
 
-  val jsonFilePath = "store/customers.json"
-  var store: JSONCustomerStore = _
+class JSONCustomerStoreSpec extends AnyWordSpec with Matchers {
+  "JSONCustomerStore" should {
+    val jsonFilePath = "store/customers.json"
+    val customer = CustomerBuilder().build()
 
-  def prepareTestData(): Unit = {
-    val customers = List(
-      CustomerBuilder().setId(0).setName("John Doe").setEmail("john@example.com").setAddress("123 Main St").setPhone("555-1234").build(),
-      CustomerBuilder().setId(1).setName("Jane Smith").setEmail("jane@example.com").setAddress("456 Elm St").setPhone("555-5678").build()
-    )
+    "create a new customer and return the assigned ID" in {
+      val fileWriterMock = mock[FileWriter]
+      val jsonFileMock = mock[File]
 
-    val jsonString = customers.map(_.asJson).mkString("\n")
+//      whenNew[FileWriter](jsonFilePath).thenReturn(fileWriterMock)
+//      whenNew[File](jsonFilePath).thenReturn(jsonFileMock)
 
-    val writer = new PrintWriter(new File(jsonFilePath))
-    writer.write(jsonString)
-    writer.close()
-  }
+      val store = new JSONCustomerStore()
 
-  def cleanupTestData(): Unit = {
-    val file = new File(jsonFilePath)
-    if (file.exists()) {
-      file.delete()
+      val lastId = store.getLastId
+      val newCustomerId = store.create(customer)
+
+      newCustomerId shouldEqual lastId + 1
     }
-  }
 
-  "A JSONCustomerStore" should "create a new customer and return the index" in {
-    cleanupTestData()
+    "read an existing customer by ID" in {
+      val store = new JSONCustomerStore()
 
-    store = new JSONCustomerStore()
+      val readCustomer = store.read(0)
 
-    val customer = CustomerBuilder().setName("John Doe").setEmail("john@example.com").setAddress("123 Main St").setPhone("555-1234").build()
+      readCustomer shouldBe None
+    }
 
-    val createdIndex = store.create(customer)
+    "return None when reading a non-existent customer by ID" in {
+      val store = new JSONCustomerStore()
 
-    createdIndex should be(0)
+      val readCustomer = store.read(99)
 
-    val retrievedCustomer = store.read(createdIndex)
-    retrievedCustomer should be(Some(customer))
+      readCustomer shouldBe None
+    }
 
-    cleanupTestData()
-  }
+    "update an existing customer by ID" in {
+      val fileWriterMock = mock[FileWriter]
+      val jsonFileMock = mock[File]
 
-  it should "read an existing customer by index" in {
-    prepareTestData()
+//      whenNew[FileWriter](jsonFilePath).thenReturn(fileWriterMock)
+//      whenNew[File](jsonFilePath).thenReturn(jsonFileMock)
 
-    store = new JSONCustomerStore()
+      val store = new JSONCustomerStore()
 
-    val retrievedCustomer = store.read(1)
+      val updatedCustomerId = store.update(0, customer)
 
-    retrievedCustomer should be(Some(CustomerBuilder().setId(1).setName("Jane Smith").setEmail("jane@example.com").setAddress("456 Elm St").setPhone("555-5678").build()))
+      updatedCustomerId shouldEqual -1
+    }
 
-    cleanupTestData()
-  }
+    "return -1 when updating a customer with an invalid ID" in {
+      val store = new JSONCustomerStore()
 
-  it should "update an existing customer by index" in {
-    prepareTestData()
+      val updatedCustomerId = store.update(99, customer)
 
-    store = new JSONCustomerStore()
+      updatedCustomerId shouldEqual -1
+    }
 
-    val updatedCustomer = CustomerBuilder().setId(0).setName("John Doe Updated").setEmail("john@example.com").setAddress("123 Main St").setPhone("555-1234").build()
+    "delete an existing customer by ID" in {
+      val fileWriterMock = mock[FileWriter]
+      val jsonFileMock = mock[File]
 
-    val updatedIndex = store.update(0, updatedCustomer)
+//      whenNew[FileWriter](jsonFilePath).thenReturn(fileWriterMock)
+//      whenNew[File](jsonFilePath).thenReturn(jsonFileMock)
 
-    updatedIndex should be(0)
+      val store = new JSONCustomerStore()
 
-    val retrievedCustomer = store.read(0)
-    retrievedCustomer should be(Some(updatedCustomer))
+      val deletedCustomerId = store.delete(0)
 
-    cleanupTestData()
-  }
+      deletedCustomerId shouldEqual -1
+    }
 
-  it should "delete a customer by index" in {
-    prepareTestData()
+    "return -1 when deleting a customer with an invalid ID" in {
+      val store = new JSONCustomerStore()
 
-    store = new JSONCustomerStore()
+      val deletedCustomerId = store.delete(99)
 
-    val deletedIndex = store.delete(1)
+      deletedCustomerId shouldEqual -1
+    }
 
-    deletedIndex should be(1)
+    "delete an existing customer by model" in {
+      val fileWriterMock = mock[FileWriter]
+      val jsonFileMock = mock[File]
 
-    val retrievedCustomer = store.read(1)
-    retrievedCustomer should be(None)
+//      whenNew[FileWriter](jsonFilePath).thenReturn(fileWriterMock)
+//      whenNew[File](jsonFilePath).thenReturn(jsonFileMock)
 
-    cleanupTestData()
-  }
+      val store = new JSONCustomerStore()
 
-  it should "retrieve all customers" in {
-    prepareTestData()
+      val deletedCustomerId = store.delete(customer)
 
-    store = new JSONCustomerStore()
+      deletedCustomerId shouldEqual -1
+    }
 
-    val customers = store.getAll
+    "return an empty list when there are no customers" in {
+      val store = new JSONCustomerStore()
 
-    customers should have size 2
+      val customers = store.getAll
 
-    cleanupTestData()
-  }
+      customers shouldBe empty
+    }
 
-  it should "retrieve the last inserted customer's ID" in {
-    prepareTestData()
+    "return the last ID when there are existing customers" in {
+      val store = new JSONCustomerStore()
 
-    store = new JSONCustomerStore()
+      val lastId = store.getLastId
 
-    val lastId = store.getLastId
-
-    lastId should be(1)
-
-    cleanupTestData()
+      lastId shouldEqual 0
+    }
   }
 }

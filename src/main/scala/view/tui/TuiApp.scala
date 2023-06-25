@@ -1,11 +1,12 @@
 package de.htwg.scm
-package tui
+package view.tui
 
 import com.google.inject.Guice
-import de.htwg.scm.controller.*
-import de.htwg.scm.store.*
-import de.htwg.scm.tui.view.{ITuiView, TuiTaskView}
+import controller.*
+import model.Project
+import store.*
 import net.codingwell.scalaguice.InjectorExtensions.*
+import view.tui.TuiCustomerView
 
 import scala.io.StdIn
 import scala.util.{Failure, Success}
@@ -14,13 +15,8 @@ object TuiApp {
   def buildViews(): ITuiView = {
     val injector = Guice.createInjector(new ControllerModule, new StoreModule)
     val customerController: ICustomerController = injector.instance[ICustomerController]
-    val projectController: IProjectController = injector.instance[IProjectController]
-    val taskController: ITaskController = injector.instance[ITaskController]
-
-//    val customerView = new CustomerView(customerController)
-//    val projectView = new ProjectView(projectController)
-    val task = new TuiTaskView(taskController)
-    task
+    val view = new TuiCustomerView(customerController)
+    view
   }
   def start(): Unit = {
 

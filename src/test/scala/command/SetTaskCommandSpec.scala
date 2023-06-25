@@ -1,57 +1,37 @@
+package de.htwg.scm
 package command
 
-import org.scalatest.flatspec.AnyFlatSpec
+import model.Task
+import state.TaskState
 import org.scalatest.matchers.should.Matchers
-import de.htwg.scm.model.Task
-import de.htwg.scm.state.TaskState
-import de.htwg.scm.command.SetTaskCommand
+import org.scalatest.wordspec.AnyWordSpec
 
-class SetTaskCommandSpec extends AnyFlatSpec with Matchers {
+class SetTaskCommandSpec extends AnyWordSpec with Matchers {
+  "A SetTaskCommand" when {
+    val initialState: Option[Task] = Some(Task(1, 1, "Task A", "Description A"))
+    val state: TaskState = new TaskState()
+    state.set(initialState)
+    val command: SetTaskCommand = SetTaskCommand(state, 2, Some("Task B"), None)
 
-  val initialState = TaskState()
-  val initialTask = Task(1, 1, "Task A", "A sample task")
+    "executed" should {
+      "set the specified task properties" in {
+        command.execute() should be(true)
+        state.get should be(Task(1, 2, "Task B", "Description A"))
+      }
+    }
 
-  "A SetTaskCommand" should "set the task in the state with the provided values and return true when executed" in {
-    val command = SetTaskCommand(initialState, 2, Some("New Title"), Some("New Description"))
+    "undone" should {
+      "revert the task state to its original value" in {
+        command.undo() should be(true)
+        state.get should be(initialState.get)
+      }
+    }
 
-    initialState.set(Some(initialTask))
-
-    val result = command.execute()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(Task(1, 2, "New Title", "New Description")))
-  }
-
-  it should "set the previous task in the state and return true when undone" in {
-    val command = SetTaskCommand(initialState, 2, Some("New Title"), Some("New Description"))
-
-    initialState.set(Some(initialTask))
-
-    command.execute()
-
-    val result = command.undo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(initialTask))
-  }
-
-  it should "set the task in the state with the provided values and return true when redone" in {
-    val command = SetTaskCommand(initialState, 2, Some("New Title"), Some("New Description"))
-
-    initialState.set(Some(initialTask))
-
-    command.execute()
-    command.undo()
-
-    val result = command.redo()
-
-    result should be(true)
-
-    val currentState = initialState.get
-    currentState should be(Some(Task(1, 2, "New Title", "New Description")))
+    "redone" should {
+      "execute the command again and set the specified task properties" in {
+        command.redo() should be(true)
+        state.get should be(Task(1, 2, "Task B", "Description A"))
+      }
+    }
   }
 }
