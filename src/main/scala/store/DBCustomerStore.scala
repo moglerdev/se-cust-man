@@ -65,7 +65,7 @@ class DBCustomerStore extends ICustomerStore {
   override def delete(model: Customer): Int = delete(model.id)
   
   override def getAll: List[Customer] = {
-    val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM customer")
+    val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM customer where _deleted = 0")
     val resultSet = statement.executeQuery()
     var customers: List[Customer] = List.empty
     while (resultSet.next()) {

@@ -60,7 +60,7 @@ class DBProjectStore extends IProjectStore {
   override def delete(model: Project): Int = delete(model.id)
 
   override def getAll: List[Project] = {
-    val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM project")
+    val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM project where _deleted = 0")
     val resultSet = statement.executeQuery()
     var projects: List[Project] = List.empty
     while (resultSet.next()) {

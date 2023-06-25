@@ -58,7 +58,7 @@ class DBTaskStore extends ITaskStore {
   override def delete(model: Task): Int = delete(model.id)
 
   override def getAll: List[Task] = {
-    val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM task")
+    val statement: PreparedStatement = connection.prepareStatement("SELECT * FROM task where _deleted = 0")
     val resultSet = statement.executeQuery()
     var projects: List[Task] = List.empty
     while (resultSet.next()) {
