@@ -1,6 +1,11 @@
 # macOS
 .DS_Store
 
+# sql
+*.db
+
+# docker secrets
+
 # sbt specific
 dist/*
 target/
