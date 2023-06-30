@@ -3,7 +3,7 @@ import CustomerView from "../components/CustomerView";
 import { Customer } from "../model";
 import Card from "../components/Card";
 import Anchor from "../components/Anchor";
-import { useCustomerStore } from "../store";
+import { useCustomerStore } from "../useCustomerStore";
 
 
 const CustomerList = ({customers}: {customers: Customer[]}) => {

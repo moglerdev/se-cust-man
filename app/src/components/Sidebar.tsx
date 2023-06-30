@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Button from "./Button";
-import { useCustomerStore } from "../store";
+import { useCustomerStore } from "../useCustomerStore";
 
 interface SidebarLinkProps {
   to: string;

@@ -1,10 +1,11 @@
 import React from "react";
-import CustomerView, { CustomerEditView } from "../components/CustomerView";
+import { CustomerEditView } from "../components/CustomerView";
 import Card from "../components/Card";
 
-import { useCustomerStore } from "../store";
+import { useCustomerStore } from "../useCustomerStore";
 import { Customer } from "../model";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
+import ProjectList from "../components/ProjectList";
 
 const CustomerPage: React.FC = () => {
 
@@ -25,22 +26,25 @@ const CustomerPage: React.FC = () => {
   }
 
   return (
-    <Card title="Customer Details">
+    <Card>
+      <h1>Customer {customer.name}</h1>
       <CustomerEditView onSave={handleSave} customer={customer} />
       <hr className="my-10"/>
       <h2>Projects</h2>
+      <ProjectList projects={customer.project} />
     </Card>
   );
 };
 
 export const CustomerNewPage: React.FC = () => {
   // new customer
-  const customer = {
+  const customer : Customer = {
     id: -1,
     name: "",
     email: "",
     phone: "",
     address: "",
+    project: []
   };
 
   // react router hook
@@ -52,10 +56,9 @@ export const CustomerNewPage: React.FC = () => {
   };
 
   return (
-    <Card title="Customer Details">
+    <Card >
+      <h1>New Customer</h1>
       <CustomerEditView onSave={handleSave} customer={customer} />
-      <hr className="my-10"/>
-      <h2>Projects</h2>
     </Card>
   );
 };

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Card from "../components/Card";
 import Button from "../components/Button";
-import { useCustomerStore } from "../store";
+import { useCustomerStore } from "../useCustomerStore";
 import { useParams } from "react-router-dom";
 
 const DeleteConfirmationPage = () => {
