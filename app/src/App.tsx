@@ -3,23 +3,24 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import CustomersPage from "./pages/CustomersPage";
-import CustomerPage from "./pages/CustomerPage";
+import CustomerPage, { CustomerNewPage } from "./pages/CustomerPage";
 import DeleteConfirmationPage from "./pages/DeleteConfirmationPage";
 
 const App: React.FC = () => {
+
   return (
     <BrowserRouter>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="w-full">
+        <div className="w-full p-10">
           <Routes>
             <Route path="/" element={<CustomersPage />} />
             <Route
               path="/customer/new"
-              element={<CustomerPage id={-1} />}
+              element={<CustomerNewPage  />}
             />
             <Route path="/customer/delete/:id" element={<DeleteConfirmationPage />} />
-            <Route path="/customer/:id" element={<CustomerPage id={-1} />} />
+            <Route path="/customer/:id" element={<CustomerPage />} />
           </Routes>
         </div>
       </div>
