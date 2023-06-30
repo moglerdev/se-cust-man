@@ -31,8 +31,16 @@ object Customer {
   }
 }
 
+trait ICustomerBuilder {
+  def setId(id: Int): ICustomerBuilder
+  def setName(name: String): ICustomerBuilder
+  def setEmail(email: String): ICustomerBuilder
+  def setPhoneNumber(phone: String): ICustomerBuilder
+  def setAddress(address: String): ICustomerBuilder
+  def build(): Customer
+}
 
-class CustomerBuilder{
+class CustomerBuilder extends ICustomerBuilder {
     private var id: Int = -1
     private var name: String = ""
     private var email: String = ""

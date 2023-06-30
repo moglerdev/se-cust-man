@@ -4,10 +4,11 @@ package store
 import de.htwg.scm.model.Project
 
 import java.sql.{Connection, PreparedStatement}
+import com.google.inject.{Guice, Inject, Injector}
+import net.codingwell.scalaguice.InjectorExtensions._
 
 
-class DBProjectStore extends IProjectStore {
-  private val connection: Connection = DB.connect
+class DBProjectStore(connection: Connection) extends IProjectStore {
 
   def disconnect(): Unit = {
     if (connection != null) {

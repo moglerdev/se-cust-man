@@ -3,9 +3,10 @@ package store
 
 import java.sql.{Connection, PreparedStatement}
 import model.Task
+import com.google.inject.{Guice, Inject, Injector}
+import net.codingwell.scalaguice.InjectorExtensions._
 
-class DBTaskStore extends ITaskStore {
-  private val connection: Connection = DB.connect
+class DBTaskStore(connection: Connection) extends ITaskStore {
 
   def disconnect(): Unit = {
     if (connection != null) {

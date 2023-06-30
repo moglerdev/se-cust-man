@@ -4,11 +4,10 @@ package store
 import model.{Customer, CustomerBuilder}
 
 import java.sql.{Connection, PreparedStatement}
+import com.google.inject.{Guice, Inject, Injector}
+import net.codingwell.scalaguice.InjectorExtensions._
 
-
-class DBCustomerStore extends ICustomerStore {
-  private val connection: Connection = DB.connect
-
+class DBCustomerStore @Inject()(connection: Connection) extends ICustomerStore {
   def disconnect(): Unit = {
     if (connection != null) {
       connection.close()

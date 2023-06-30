@@ -28,6 +28,49 @@ object Task {
 
     Task(id.getOrElse(-1), projectId.getOrElse(-1), title.map(_.trim).getOrElse(""), description.map(_.trim).getOrElse(""))
   }
+}
 
+trait ITaskBuilder {
+  def setId(id: Int): ITaskBuilder
+  def setTitle(title: String): ITaskBuilder
+  def setProject(id: Int): ITaskBuilder
+  def setProject(project: Project): ITaskBuilder
+  def setDescription(description: String): ITaskBuilder
+  def build(): Task
+}
 
+class TaskBuilder extends ITaskBuilder {
+  private var id: Int = -1
+  private var title: String = ""
+  private var description: String = ""
+  private var project_id: Int = -1
+
+  override def setId(id: Int): ITaskBuilder = {
+    this.id = id
+    this
+  }
+
+  override def setTitle(title: String): ITaskBuilder = {
+    this.title = title
+    this
+  }
+
+  override def setProject(project: Project): ITaskBuilder = {
+    this.project_id = project.id
+    this
+  }
+
+  override def setDescription(description: String): ITaskBuilder = {
+    this.description = description
+    this
+  }
+
+  override def setProject(id: Int): ITaskBuilder = {
+    this.project_id = id
+    this
+  }
+
+  override def build(): Task = {
+    Task(id, project_id, title, description)
+  }
 }

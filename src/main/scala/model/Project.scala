@@ -27,3 +27,48 @@ object Project {
     Project(id.getOrElse(-1), customer.id, title.map(_.trim).getOrElse(""), description.map(_.trim).getOrElse(""))
   }
 }
+
+trait IProjectBuilder {
+  def setId(id: Int): IProjectBuilder
+  def setTitle(title: String): IProjectBuilder
+  def setCustomer(id: Int): IProjectBuilder
+  def setCustomer(customer: Customer): IProjectBuilder
+  def setDescription(description: String): IProjectBuilder
+  def build(): Project
+}
+
+class ProjectBuilder extends IProjectBuilder {
+  private var id: Int = -1
+  private var title: String = ""
+  private var description: String = ""
+  private var customer_id: Int = -1
+
+  override def setId(id: Int): IProjectBuilder = {
+    this.id = id
+    this
+  }
+
+  override def setTitle(title: String): IProjectBuilder = {
+    this.title = title
+    this
+  }
+
+  override def setCustomer(customer: Customer): IProjectBuilder = {
+    this.customer_id = customer.id
+    this
+  }
+
+  override def setCustomer(id: Int): IProjectBuilder = {
+    this.customer_id = id
+    this
+  }
+
+  override def setDescription(description: String): IProjectBuilder = {
+    this.description = description
+    this
+  }
+
+  override def build(): Project = {
+    Project(id, -1, title, description)
+  }
+}

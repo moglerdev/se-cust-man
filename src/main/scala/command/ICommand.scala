@@ -6,14 +6,14 @@ import state.IState
 import scala.util.Try
 
 // Trait representing a command
-trait ICommand {
+trait ICommand[TModel] {
   // Executes the command and returns a boolean indicating success or failure
-  def execute(): Boolean
+  def execute(): IState[TModel]
 
   // Undoes the command and returns a boolean indicating success or failure
-  def undo(): Boolean
+  def undo(): IState[TModel]
 
   // Redoes the command and returns a boolean indicating success or failure
-  def redo(): Boolean
+  def redo(): IState[TModel]
 }
 

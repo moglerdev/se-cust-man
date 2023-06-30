@@ -10,6 +10,7 @@ trait IModelController[TModel] extends IPublisher {
   def update(id: Int, model: TModel): Boolean
   def getAll: List[TModel]
   def get(id: Int): Option[TModel]
+//  def exists(model: TModel): Boolean
 }
 
 // Abstract class serving as a base for model controllers

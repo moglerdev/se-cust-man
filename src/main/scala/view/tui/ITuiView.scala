@@ -11,13 +11,16 @@ import scala.util.{Failure, Success, Try}
 
 trait ITuiView extends IDispose {
     def setNext(next: ITuiView): ITuiView
+    def clearNext(): ITuiView
     def handle(command: String): Try[String]
     def dispose(): Unit
 }
 
-abstract class TuiModelView[TModel](val prefix: String, val controller: IModelController[TModel]) extends ITuiView with IObserver {
+abstract class TuiModelView[TModel] (
+    val prefix: String,
+    val controller: IModelController[TModel])
+    extends ITuiView with IObserver {
     controller.observe(this)
-    val pattern: Regex = """^(\w+)\s+(\w+)(?:\s+(.*))?$""".r
 
     private var next: Option[ITuiView] = None
     def getNext: Option[ITuiView] = next
@@ -26,9 +29,10 @@ abstract class TuiModelView[TModel](val prefix: String, val controller: IModelCo
         this.next = Some(next)
         next
     }
-    def clearNext(): Unit = {
+    def clearNext(): ITuiView = {
         if (next.isDefined) next.get.dispose()
         next = None
+        this
     }
 
     protected def convertToModel(args: String): Try[TModel]
@@ -74,6 +78,7 @@ abstract class TuiModelView[TModel](val prefix: String, val controller: IModelCo
         } else handleSet(task.get)
     }
 
+    val pattern: Regex = """^(\w+)\s+(\w+)(?:\s+(.*))?$""".r
     def handle(command: String): Try[String] = {
         command match {
             case "exit" => Success("exit")
@@ -88,7 +93,9 @@ abstract class TuiModelView[TModel](val prefix: String, val controller: IModelCo
             case _ =>
                 next match {
                     case Some(n) => n.handle(command)
-                    case None => Failure(new IllegalArgumentException("No matching command found"))
+                    case None => Failure(
+                        new IllegalArgumentException(
+                            "No matching command found"))
                 }
         }
     }
