@@ -118,7 +118,7 @@ sbt run [--gui]
 ### Customer
 
 ```bash
-prompt> project ls [-o <order=name|email|phone|address>]
+prompt> customer ls
 prompt> customer help 
 prompt> customer set [-i id] -n <name> -e <email> -p <phone number> -a <address>
 prompt> customer rm [ids ...]
@@ -128,9 +128,9 @@ prompt> customer open [id]
 ### Project (after open customer)
 
 ```bash
-prompt> project ls -o <order=title|description|priority>
+prompt> project ls 
 prompt> project help 
-prompt> project set [-i <id:int>] -t <title:string> -d <description:string> -p <priority:int>
+prompt> project set [-i <id:int>] -t <title:string> -d <description:string>
 prompt> project rm <ids ...>
 prompt> project open <id:int>
 ```
@@ -138,9 +138,9 @@ prompt> project open <id:int>
 ### Tasks (after open project)
 
 ```bash
-prompt> task ls -o <order=title|description|deadline>
+prompt> task ls 
 prompt> task help
-prompt> task set [-i <id:int>] -t <title:string> -d <description:string> -e <priority:int>
+prompt> task set [-i <id:int>] -t <title:string> -d <description:string>
 prompt> task rm <ids ...>
 ```
 
